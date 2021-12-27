@@ -2,13 +2,8 @@ from game.model.util import load_image
 import pygame
 
 
-class Floor(pygame.sprite.Sprite):
-    def __init__(self, *group):
-        super().__init__(*group)
-
-
-class Floor1(Floor):
-    image = load_image('floor_1')
+class Floor1(pygame.sprite.Sprite):
+    image = load_image('64x64_floor_1.png')
 
     def __init__(self, x, y, *group):
         super().__init__(*group)
@@ -18,8 +13,8 @@ class Floor1(Floor):
         self.rect.y = y
 
 
-class Floor2(Floor):
-    image = load_image('floor_2')
+class Floor2(pygame.sprite.Sprite):
+    image = load_image('floor_2.png')
 
     def __init__(self, x, y, *group):
         super().__init__(*group)
@@ -29,8 +24,8 @@ class Floor2(Floor):
         self.rect.y = y
 
 
-class Floor3(Floor):
-    image = load_image('floor_3')
+class Floor3(pygame.sprite.Sprite):
+    image = load_image('floor_3.png')
 
     def __init__(self, x, y, *group):
         super().__init__(*group)
