@@ -6,10 +6,7 @@ from game.view.object_sprites import Wall1
 WALL_SIGN = "#"
 NOTHING_SIGN = "."
 
-wall_1_path = "64x64_wall_1.png"
-floor_1_path = "64x64_floor_1.png"
 cell_size = 64
-
 
 class Dungeon:
     def __init__(self, size):

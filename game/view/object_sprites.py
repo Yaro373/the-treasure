@@ -19,14 +19,14 @@ class Wall1(BaseObjectSprite):
 
 
 class Wall2(BaseObjectSprite):
-    image = load_image('64x64_wall_1.png')
+    image = load_image('64x64_wall_2.png')
 
     def __init__(self, x, y, *group):
         super().__init__(Wall2.image, x, y, *group)
 
 
 class Wall3(BaseObjectSprite):
-    image = load_image('64x64_wall_1.png')
+    image = load_image('64x64_wall_3.png')
 
     def __init__(self, x, y, *group):
         super().__init__(Wall3.image, x, y, *group)
