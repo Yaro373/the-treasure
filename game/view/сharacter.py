@@ -13,6 +13,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = y
         self.speed = 2
         self.move_data = [0, 0, 0, 0]
+        self.prev_collide = None
 
     def update(self, event, walls_sprite_group):
         if event is not None:
@@ -35,15 +36,23 @@ class Character(pygame.sprite.Sprite):
                 elif event.key == pygame.K_LEFT:
                     self.move_data[3] = 0
 
-        prev_data = (self.rect.x, self.rect.y)
         if self.move_data[0] == 1:
-            self.rect.y -= 1
+            self.rect.y -= self.speed
+        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+            self.rect.y += self.speed
+
         if self.move_data[1] == 1:
-            self.rect.x += 1
+            self.rect.x += self.speed
+        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+            self.rect.x -= self.speed
+
         if self.move_data[2] == 1:
-            self.rect.y += 1
+            self.rect.y += self.speed
+        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+            self.rect.y -= self.speed
+
         if self.move_data[3] == 1:
-            self.rect.x -= 1
-        if pygame.sprite.spritecollideany(self, walls_sprite_group) or self.rect.x < 0 :
-            self.rect.x = prev_data[0]
-            self.rect.y = prev_data[1]
+            self.rect.x -= self.speed
+        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+            self.rect.x += self.speed
+

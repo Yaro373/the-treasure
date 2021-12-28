@@ -1,12 +1,7 @@
 import random
 import pygame
-from game.model.util import load_image
-from game.view.floor import Floor1
-from game.view.floor import Floor2
-from game.view.floor import Floor3
-from game.view.wall import Wall1
-from game.view.wall import Wall2
-from game.view.wall import Wall3
+from game.view.sprites import Floor1
+from game.view.sprites import Wall1
 import game.view.сharacter
 
 WALL_SIGN = "#"
@@ -32,7 +27,6 @@ class Dungeon:
                 if self.data[row][col] == NOTHING_SIGN:
                     Floor1(row * cell_size, col * cell_size, floor_sprite_group, all_sprites)
 
-        print(self.data)
 
     def randomize_ways(self, data, row, col):
         row_pos_del = 0
@@ -134,7 +128,7 @@ if __name__ == '__main__':
     size = width, height = 800, 600
     screen = pygame.display.set_mode(size)
     loop = True
-    dungeon = Dungeon(4)
+    dungeon = Dungeon(20)
     camera = Camera()
     character = game.view.сharacter.Character(0, 0, character_sprite_group, all_sprites)
 
