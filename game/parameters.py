@@ -1,0 +1,1 @@
+GAME_TITLE = 'The Treasure'

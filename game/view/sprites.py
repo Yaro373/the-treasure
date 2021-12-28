@@ -52,7 +52,7 @@ class Floor2(Floor):
     image = load_image('64x64_floor_2.png')
 
     def __init__(self, x, y, *group):
-        super().__init__(Floor2.image, x, y*group)
+        super().__init__(Floor2.image, x, y, *group)
 
 
 class Floor3(Floor):
