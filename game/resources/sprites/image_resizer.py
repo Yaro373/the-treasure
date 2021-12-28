@@ -7,4 +7,4 @@ def resize(filename):
     img.save("64x64_" + filename)
 
 
-resize('floor_3.png')
+resize('opened_chest.png')

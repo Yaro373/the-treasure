@@ -1,7 +1,7 @@
 import pygame
 import random
-from game.view.sprites import Floor1
-from game.view.sprites import Wall1
+from game.view.object_sprites import Floor1
+from game.view.object_sprites import Wall1
 
 WALL_SIGN = "#"
 NOTHING_SIGN = "."
