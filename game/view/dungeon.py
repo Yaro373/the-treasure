@@ -20,20 +20,20 @@ class Dungeon:
 
     def draw_dungeon(self):
         for col in range(0, len(self.data) + 2):
-            Wall1(col * cell_size, 0, self.walls_sprite_group, self.all_sprites)
+            Wall1(0, col * cell_size, self.walls_sprite_group, self.all_sprites)
         for row in range(1, len(self.data) + 1):
-            Wall1(0, row * cell_size, self.walls_sprite_group, self.all_sprites)
+            Wall1(row * cell_size, 0, self.walls_sprite_group, self.all_sprites)
             for col in range(1, len(self.data) + 1):
                 if self.data[row - 1][col - 1] == WALL_SIGN:
-                    Wall1(col * cell_size, row * cell_size, self.walls_sprite_group,
+                    Wall1(row * cell_size, col * cell_size, self.walls_sprite_group,
                           self.all_sprites)
                 if self.data[row - 1][col - 1] == NOTHING_SIGN:
-                    Floor1(col * cell_size, row * cell_size, self.floor_sprite_group,
+                    Floor1(row * cell_size, col * cell_size, self.floor_sprite_group,
                            self.all_sprites)
-            Wall1((len(self.data) + 1) * cell_size, row * cell_size, self.walls_sprite_group,
+            Wall1(row * cell_size, (len(self.data) + 1) * cell_size, self.walls_sprite_group,
                   self.all_sprites)
         for col in range(0, len(self.data) + 2):
-            Wall1(col * cell_size, (len(self.data) + 1) * cell_size, self.walls_sprite_group,
+            Wall1((len(self.data) + 1) * cell_size, col * cell_size, self.walls_sprite_group,
                   self.all_sprites)
 
     @staticmethod

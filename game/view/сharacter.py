@@ -11,7 +11,9 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 1
+        self.f_x = 0
+        self.f_y = 0
+        self.speed = 4
         self.move_data = [0, 0, 0, 0]
         self.prev_collide = None
 
@@ -38,21 +40,29 @@ class Character(pygame.sprite.Sprite):
 
         if self.move_data[0] == 1:
             self.rect.y -= self.speed
+            self.f_y -= self.speed
         if pygame.sprite.spritecollideany(self, walls_sprite_group):
             self.rect.y += self.speed
+            self.f_y += self.speed
 
         if self.move_data[1] == 1:
             self.rect.x += self.speed
+            self.f_x += self.speed
         if pygame.sprite.spritecollideany(self, walls_sprite_group):
             self.rect.x -= self.speed
+            self.f_x -= self.speed
 
         if self.move_data[2] == 1:
             self.rect.y += self.speed
+            self.f_y += self.speed
         if pygame.sprite.spritecollideany(self, walls_sprite_group):
             self.rect.y -= self.speed
+            self.f_y -= self.speed
 
         if self.move_data[3] == 1:
             self.rect.x -= self.speed
+            self.f_x -= self.speed
         if pygame.sprite.spritecollideany(self, walls_sprite_group):
             self.rect.x += self.speed
+            self.f_x += self.speed
 
