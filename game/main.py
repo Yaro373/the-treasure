@@ -1,6 +1,5 @@
 import pygame
-import game.view.сharacter
-from game.view.dungeon import Dungeon, Camera, cell_size
+import game.view.level
 from parameters import GAME_TITLE
 
 
@@ -9,11 +8,9 @@ if __name__ == '__main__':
     size = width, height = 800, 600
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption(GAME_TITLE)
+    level_manager = game.view.level.LevelManager()
+    level = level_manager.get_current_level()
     loop = True
-    dungeon = Dungeon(20)
-    camera = Camera()
-    character = game.view.сharacter.Character(cell_size, cell_size,
-                                              dungeon.character_sprite_group, dungeon.all_sprites)
 
     fps = 60
     clock = pygame.time.Clock()
@@ -22,18 +19,21 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 loop = False
             if event.type == pygame.KEYDOWN:
-                dungeon.character_sprite_group.update(event, dungeon.walls_sprite_group)
+                level.dungeon.character_sprite_group.update(event, level.dungeon.walls_sprite_group)
             if event.type == pygame.KEYUP:
-                dungeon.character_sprite_group.update(event, dungeon.walls_sprite_group)
-        dungeon.character_sprite_group.update(None, dungeon.walls_sprite_group)
-        for sprite in dungeon.all_sprites:
-            camera.apply(sprite)
+                level.dungeon.character_sprite_group.update(event, level.dungeon.walls_sprite_group)
+        level.dungeon.character_sprite_group.update(None, level.dungeon.walls_sprite_group)
+        level.dungeon.ghost_sprite_group.update(None, level.dungeon.walls_sprite_group)
+        for sprite in level.dungeon.all_sprites:
+            level.camera.apply(sprite)
 
-        camera.update(character, width, height)
+        level.camera.update(level.character, width, height)
         screen.fill((0, 0, 0))
-        dungeon.walls_sprite_group.draw(screen)
-        dungeon.floor_sprite_group.draw(screen)
-        dungeon.character_sprite_group.draw(screen)
+        level.dungeon.walls_sprite_group.draw(screen)
+        level.dungeon.floor_sprite_group.draw(screen)
+        level.dungeon.character_sprite_group.draw(screen)
+        level.dungeon.ghost_sprite_group.draw(screen)
 
         clock.tick(fps)
         pygame.display.flip() # todo wall class
+

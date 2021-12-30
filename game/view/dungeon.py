@@ -2,40 +2,57 @@ import pygame
 import random
 from game.view.object_sprites import Floor1
 from game.view.object_sprites import Wall1
+import game.view.creature
+from game.parameters import CELL_SIZE
 
-WALL_SIGN = "#"
-NOTHING_SIGN = "."
-
-cell_size = 64
+NOTHING_SIGN = 0
+WALL_SIGN = 1
+GHOST_SIGN = 2
 
 
 class Dungeon:
     def __init__(self, size):
-        self.data = self.generate(size)
+        self.data = DungeonGenerator.generate(size)
         self.walls_sprite_group = pygame.sprite.Group()
         self.floor_sprite_group = pygame.sprite.Group()
         self.character_sprite_group = pygame.sprite.Group()
+        self.ghost_sprite_group = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.draw_dungeon()
 
     def draw_dungeon(self):
-        for col in range(0, len(self.data) + 2):
-            Wall1(0, col * cell_size, self.walls_sprite_group, self.all_sprites)
-        for row in range(1, len(self.data) + 1):
-            Wall1(row * cell_size, 0, self.walls_sprite_group, self.all_sprites)
-            for col in range(1, len(self.data) + 1):
-                if self.data[row - 1][col - 1] == WALL_SIGN:
-                    Wall1(row * cell_size, col * cell_size, self.walls_sprite_group,
+        for row in range(0, len(self.data)):
+            for col in range(0, len(self.data)):
+                if self.data[row][col] == WALL_SIGN:
+                    Wall1(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
                           self.all_sprites)
-                if self.data[row - 1][col - 1] == NOTHING_SIGN:
-                    Floor1(row * cell_size, col * cell_size, self.floor_sprite_group,
+                else:
+                    Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
                            self.all_sprites)
-            Wall1(row * cell_size, (len(self.data) + 1) * cell_size, self.walls_sprite_group,
-                  self.all_sprites)
-        for col in range(0, len(self.data) + 2):
-            Wall1((len(self.data) + 1) * cell_size, col * cell_size, self.walls_sprite_group,
-                  self.all_sprites)
 
+    def get_creature_sprite_neighbours(self, sprite, radius):
+        x, y = sprite.get_dung_coords()
+        left_x = max(x - radius, 0)
+        right_x = min(x + radius, len(self.data))
+        up_y = max(y - radius, 0)
+        down_y = min(y + radius, len(self.data))
+        result = {0: [], 1: [], 2: [], 3: [], 4: []}
+        result[0].append((x, y))
+        for i in range(max(0, y - 1), up_y - 1, -1):
+            result[1].append((x, i))
+        for i in range(min(len(self.data) - 1, y + 1), down_y + 1):
+            result[3].append((x, i))
+        for i in range(max(0, x - 1), left_x - 1, -1):
+            result[4].append((i, y))
+        for i in range(min(len(self.data) - 1, x + 1), right_x + 1):
+            result[2].append((i, y))
+        return result
+
+    def get_object_at(self, x, y):
+        return self.data[x][y]
+
+
+class DungeonGenerator:
     @staticmethod
     def randomize_ways(data, row, col):
         row_pos_del = 0
@@ -88,7 +105,8 @@ class Dungeon:
         if rcresult == 4:
             return 0, -1
 
-    def generate(self, dots_num, is_first=True, row=0, col=0, pos_data=None, data=None):
+    @staticmethod
+    def generate(dots_num, is_first=True, row=0, col=0, pos_data=None, data=None):
         if data is None:
             data = []
         if pos_data is None:
@@ -100,22 +118,22 @@ class Dungeon:
             dots_num = dots_num * dots_num - 1
             data[row][col] = NOTHING_SIGN
             pos_data.append((row, col))
-            return self.generate(dots_num, is_first, row, col, pos_data, data)
+            return DungeonGenerator.generate(dots_num, is_first, row, col, pos_data, data)
         elif dots_num == 0:
             return data
         else:
-            rand = self.randomize_ways(data, row, col)
+            rand = DungeonGenerator.randomize_ways(data, row, col)
             if rand == (0, 0):
                 # back step
                 cords = pos_data.pop(-1)
-                return self.generate(dots_num, is_first, cords[0], cords[1], pos_data, data)
+                return DungeonGenerator.generate(dots_num, is_first, cords[0], cords[1], pos_data, data)
             data[row + rand[0]][col + rand[1]] = NOTHING_SIGN
             row = row + rand[0] * 2
             col = col + rand[1] * 2
             data[row][col] = NOTHING_SIGN
             dots_num -= 1
             pos_data.append((row, col))
-            return self.generate(dots_num, is_first, row, col, pos_data, data)
+            return DungeonGenerator.generate(dots_num, is_first, row, col, pos_data, data)
 
 
 class Camera:
