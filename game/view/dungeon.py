@@ -33,9 +33,9 @@ class Dungeon:
     def get_creature_sprite_neighbours(self, sprite, radius):
         x, y = sprite.get_dung_coords()
         left_x = max(x - radius, 0)
-        right_x = min(x + radius, len(self.data))
+        right_x = min(x + radius, len(self.data) - 1)
         up_y = max(y - radius, 0)
-        down_y = min(y + radius, len(self.data))
+        down_y = min(y + radius, len(self.data) - 1)
         result = {0: [], 1: [], 2: [], 3: [], 4: []}
         result[0].append((x, y))
         for i in range(max(0, y - 1), up_y - 1, -1):
