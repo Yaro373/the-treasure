@@ -15,7 +15,8 @@ class Level:
         self.dungeon_size = dungeon_size
         self.dungeon = view.dungeon.Dungeon(self.dungeon_size)
         self.camera = view.dungeon.Camera()
-        self.character = view.creature.Character(0, 0, self.dungeon.character_sprite_group,
+        self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
+                                                 self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
 
 
