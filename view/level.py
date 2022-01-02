@@ -1,6 +1,7 @@
 import pygame
 import view.dungeon
 import view.creature
+import view.inventory
 import parameters
 
 
@@ -18,6 +19,7 @@ class Level:
         self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
                                                  self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
+        self.inventory = view.inventory.Inventory(5)
 
 
 class LevelManager:
