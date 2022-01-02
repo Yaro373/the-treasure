@@ -1,4 +1,4 @@
-from game.model.util import load_image
+from model.util import load_image
 import pygame
 
 

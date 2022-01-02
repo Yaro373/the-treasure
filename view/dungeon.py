@@ -1,9 +1,9 @@
 import pygame
 import random
-from game.view.object_sprites import Floor1
-from game.view.object_sprites import Wall1
-import game.view.creature
-from game.parameters import CELL_SIZE
+from view.object_sprites import Floor1
+from view.object_sprites import Wall1
+import view.creature
+from parameters import CELL_SIZE
 
 NOTHING_SIGN = 0
 WALL_SIGN = 1

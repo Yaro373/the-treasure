@@ -1,9 +1,9 @@
 import pygame
 import random
-from game.parameters import CELL_SIZE
-from game.model.util import load_image
-import game.view.level
-import game.view.dungeon
+from parameters import CELL_SIZE
+from model.util import load_image
+import view.level
+import view.dungeon
 import time
 
 
@@ -115,7 +115,7 @@ class Ghost(Creature):
         self.prev_point = None
 
     def update(self, event, walls_sprite_group):
-        level = game.view.level.LevelManager.get_current_level()
+        level = view.level.LevelManager.get_current_level()
         character = level.character
         direction = self.prev_direction
         prev_pos = (self.rect.x, self.rect.y)
@@ -164,11 +164,11 @@ class Ghost(Creature):
             self.clear_cnt_speed(direction, cnt_speed)
             for k, v in level.dungeon.get_creature_sprite_neighbours(self, 1).items():
                 if direction in (1, 3):
-                    if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == game.view.dungeon.NOTHING_SIGN:
+                    if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
                             self.prev_direction = k
                 if direction in (2, 4):
-                    if k in (1, 3) and level.dungeon.get_object_at(*v[0]) == game.view.dungeon.NOTHING_SIGN:
+                    if k in (1, 3) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
                             self.prev_direction = k
         else:
@@ -179,7 +179,7 @@ class Ghost(Creature):
             neighbours = level.dungeon.get_creature_sprite_neighbours(self, self.see_radius)
             main_hero_coords = level.character.get_dung_coords()
             for coords in neighbours[direction]:
-                if level.dungeon.get_object_at(*coords) == game.view.dungeon.WALL_SIGN:
+                if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
                     break
                 if main_hero_coords == coords:
                     self.start_attack()
@@ -187,7 +187,7 @@ class Ghost(Creature):
     def start_attack(self):
         self.attacking = True
         self.start_attack_moment = time.time()
-        self.main_hero_pos_index = len(game.view.level.LevelManager
+        self.main_hero_pos_index = len(view.level.LevelManager
                                        .get_current_level().character.get_path()) - 1
         self.speed *= 2
 

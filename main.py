@@ -1,5 +1,5 @@
 import pygame
-import game.view.level
+import view.level
 from parameters import GAME_TITLE
 
 
@@ -8,7 +8,7 @@ if __name__ == '__main__':
     size = width, height = 800, 600
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption(GAME_TITLE)
-    level_manager = game.view.level.LevelManager()
+    level_manager = view.level.LevelManager()
     level = level_manager.get_current_level()
     loop = True
 

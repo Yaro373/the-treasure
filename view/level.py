@@ -1,7 +1,7 @@
 import pygame
-import game.view.dungeon
-import game.view.creature
-import game.parameters
+import view.dungeon
+import view.creature
+import parameters
 
 
 class LevelCreator:
@@ -13,10 +13,10 @@ class LevelCreator:
 class Level:
     def __init__(self, dungeon_size):
         self.dungeon_size = dungeon_size
-        self.dungeon = game.view.dungeon.Dungeon(self.dungeon_size)
-        self.camera = game.view.dungeon.Camera()
-        self.character = game.view.creature.Character(0, 0, self.dungeon.character_sprite_group,
-                                                      self.dungeon.all_sprites)
+        self.dungeon = view.dungeon.Dungeon(self.dungeon_size)
+        self.camera = view.dungeon.Camera()
+        self.character = view.creature.Character(0, 0, self.dungeon.character_sprite_group,
+                                                 self.dungeon.all_sprites)
 
 
 class LevelManager:
