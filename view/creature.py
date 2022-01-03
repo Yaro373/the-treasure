@@ -17,10 +17,11 @@ class Creature(pygame.sprite.Sprite):
         self.f_x = self.rect.x
         self.f_y = self.rect.y
 
+    # Положение на координатной оси верхнего левого края
     def get_dung_coords(self):
-        result = ((self.f_x + 1) // CELL_SIZE, (self.f_y + 1) // CELL_SIZE)
-        return result
+        return (self.f_x + 1) // CELL_SIZE, (self.f_y + 1) // CELL_SIZE
 
+    # Положение на координатной оси нижнего правого края
     def get_d_dung_coords(self):
         return (self.f_x + self.rect.w - 1) // CELL_SIZE, (self.f_y + self.rect.h - 1) // CELL_SIZE
 
@@ -37,7 +38,9 @@ class Character(Creature):
         self.prev_d_coord = None
         self.path = [self.get_dung_coords()]
 
-    def update(self, event, walls_sprite_group):
+    def update(self, event):
+        level = view.level.LevelManager.get_current_level()
+        neighbours = level.dungeon.get_creature_sprite_neighbours(self, 0)
         if event is not None:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -61,28 +64,28 @@ class Character(Creature):
         if self.move_data[0] == 1:
             self.rect.y -= self.speed
             self.f_y -= self.speed
-        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+        if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.y += self.speed
             self.f_y += self.speed
 
         if self.move_data[1] == 1:
             self.rect.x += self.speed
             self.f_x += self.speed
-        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+        if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x -= self.speed
             self.f_x -= self.speed
 
         if self.move_data[2] == 1:
             self.rect.y += self.speed
             self.f_y += self.speed
-        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+        if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.y -= self.speed
             self.f_y -= self.speed
 
         if self.move_data[3] == 1:
             self.rect.x -= self.speed
             self.f_x -= self.speed
-        if pygame.sprite.spritecollideany(self, walls_sprite_group):
+        if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x += self.speed
             self.f_x += self.speed
 
@@ -114,7 +117,7 @@ class Ghost(Creature):
         self.main_hero_pos_index = -1
         self.prev_point = None
 
-    def update(self, event, walls_sprite_group):
+    def update(self, event):
         level = view.level.LevelManager.get_current_level()
         character = level.character
         direction = self.prev_direction
@@ -148,10 +151,10 @@ class Ghost(Creature):
                     self.prev_direction = 4
                 else:
                     self.prev_direction = 0
-            if pygame.sprite.spritecollideany(self, walls_sprite_group):
+            if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
                 self.rect.x = prev_pos[0]
                 self.rect.y = prev_pos[1]
-        elif pygame.sprite.spritecollideany(self, walls_sprite_group):
+        elif pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x = prev_pos[0]
             self.rect.y = prev_pos[1]
             if random.random() < 0.995:

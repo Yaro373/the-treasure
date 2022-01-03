@@ -1,7 +1,7 @@
 import pygame
 import random
 from view.object_sprites import Floor1
-from view.object_sprites import Wall1, UnbreakableWall
+from view.object_sprites import Wall1, UnbreakableWall, Chest
 import view.creature
 from parameters import CELL_SIZE
 
@@ -19,6 +19,7 @@ class Dungeon:
         self.floor_sprite_group = pygame.sprite.Group()
         self.character_sprite_group = pygame.sprite.Group()
         self.ghost_sprite_group = pygame.sprite.Group()
+        self.chest_sprite_group = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.draw_dungeon()
 

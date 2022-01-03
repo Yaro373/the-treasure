@@ -1,4 +1,8 @@
+import random
+
 from model.util import load_image
+from parameters import CELL_SIZE
+import view.level
 import pygame
 
 
@@ -9,6 +13,8 @@ class BaseObjectSprite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.dung_x = self.rect.x // CELL_SIZE
+        self.dung_y = self.rect.y // CELL_SIZE
 
 
 class Wall1(BaseObjectSprite):
@@ -65,10 +71,18 @@ class Chest(BaseObjectSprite):
     opened_chest_image = load_image('64x64_opened_chest.png')
 
     def __init__(self, x, y, *group):
-        super().__init__(Chest.opened_chest_image, x, y, *group)
+        super().__init__(Chest.closed_chest_image, x, y, *group)
+
+    def update(self, event):
+        level = view.level.LevelManager.get_current_level()
+        if event is not None:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_o:
+                if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
+                        (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
+                    self.open_chest()
 
     def open_chest(self):
-        self.image = Chest.closed_chest_image
+        self.image = Chest.opened_chest_image
 
     def close_chest(self):
         self.image = Chest.closed_chest_image

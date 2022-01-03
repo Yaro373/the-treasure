@@ -13,9 +13,9 @@ if __name__ == '__main__':
     level_manager = view.level.LevelManager()
     level = level_manager.get_current_level()
 
-    health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png'))
-    hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png'))
-    speed_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_speed.png'))
+    health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha(screen)
+    hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png')).convert_alpha(screen)
+    speed_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_speed.png')).convert_alpha(screen)
 
     loop = True
 
@@ -26,9 +26,10 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 loop = False
             if event.type == pygame.KEYDOWN:
-                level.dungeon.character_sprite_group.update(event, level.dungeon.walls_sprite_group)
+                level.dungeon.character_sprite_group.update(event)
+                level.dungeon.chest_sprite_group.update(event)
             if event.type == pygame.KEYUP:
-                level.dungeon.character_sprite_group.update(event, level.dungeon.walls_sprite_group)
+                level.dungeon.character_sprite_group.update(event)
 
         with open(os.path.join('data', 'player_data.csv'), encoding="utf8") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
@@ -37,8 +38,8 @@ if __name__ == '__main__':
                 hearing = row['hearing']
                 speed = row['speed']
 
-        level.dungeon.character_sprite_group.update(None, level.dungeon.walls_sprite_group)
-        level.dungeon.ghost_sprite_group.update(None, level.dungeon.walls_sprite_group)
+        level.dungeon.character_sprite_group.update(None)
+        level.dungeon.ghost_sprite_group.update(None)
         for sprite in level.dungeon.all_sprites:
             level.camera.apply(sprite)
         level.camera.update(level.character, width, height)
