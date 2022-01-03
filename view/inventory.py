@@ -30,7 +30,7 @@ class Inventory:
             cell_y = element_size // 10
             cell_size = element_size - element_size // 5
             if cell_x < (mouse_pos[0] - x) < (cell_x + cell_size) and \
-                    cell_y < (mouse_pos[1] - y):
+                    cell_y < (mouse_pos[1] - y) < (cell_y + cell_size):
                 pygame.draw.rect(surface, self.hovered_cell_color, (cell_x, cell_y, cell_size, cell_size))
             else:
                 pygame.draw.rect(surface, self.cell_color, (cell_x, cell_y, cell_size, cell_size))
