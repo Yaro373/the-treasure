@@ -2,6 +2,7 @@ import pygame
 import csv
 import os.path
 import view.level
+import model.value_manager
 from parameters import GAME_TITLE
 
 
@@ -17,6 +18,9 @@ if __name__ == '__main__':
     hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png')).convert_alpha(screen)
     speed_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_speed.png')).convert_alpha(screen)
 
+    font_size = 30
+    font = pygame.font.SysFont('bahnschrift', font_size)
+
     loop = True
 
     fps = 60
@@ -31,13 +35,6 @@ if __name__ == '__main__':
             if event.type == pygame.KEYUP:
                 level.dungeon.character_sprite_group.update(event)
 
-        with open(os.path.join('data', 'player_data.csv'), encoding="utf8") as csvfile:
-            reader = csv.DictReader(csvfile, delimiter=';', quotechar='"')
-            for row in reader:
-                health = row['health']
-                hearing = row['hearing']
-                speed = row['speed']
-
         level.dungeon.character_sprite_group.update(None)
         level.dungeon.ghost_sprite_group.update(None)
         for sprite in level.dungeon.all_sprites:
@@ -47,17 +44,15 @@ if __name__ == '__main__':
         screen.fill((0, 0, 0))
         level.dungeon.all_sprites.draw(screen)
 
-        font_size = 30
-        font = pygame.font.SysFont('bahnschrift', font_size)
-        text = font.render(health, True, (255, 255, 255))
+        text = font.render(model.value_manager.ValueManager.health, True, (255, 255, 255))
         screen.blit(text, (75, 10))
         screen.blit(health_icon, (10, 10))
 
-        text = font.render(hearing, True, (255, 255, 255))
+        text = font.render(model.value_manager.ValueManager.hearing, True, (255, 255, 255))
         screen.blit(text, (75, 50))
         screen.blit(hearing_icon, (15, 50))
 
-        text = font.render(speed, True, (255, 255, 255))
+        text = font.render(model.value_manager.ValueManager.speed, True, (255, 255, 255))
         screen.blit(text, (75, 90))
         screen.blit(speed_icon, (15, 90))
 
