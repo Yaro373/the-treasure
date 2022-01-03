@@ -26,7 +26,6 @@ class Creature(pygame.sprite.Sprite):
         return (self.f_x + self.rect.w - 1) // CELL_SIZE, (self.f_y + self.rect.h - 1) // CELL_SIZE
 
 
-
 class Character(Creature):
     image = load_image('32x32_character.png')
 
@@ -34,6 +33,7 @@ class Character(Creature):
         super().__init__(Character.image, x, y, *group)
         self.speed = 4
         self.move_data = [0, 0, 0, 0]
+        self.lighting_area = 5
         self.prev_coord = None
         self.prev_d_coord = None
         self.path = [self.get_dung_coords()]
@@ -98,6 +98,8 @@ class Character(Creature):
         self.prev_coord = coord
         self.prev_d_coord = d_coord
 
+        for ngh in level.dungeon.get_creature_sprite_neighbours(self, self.lighting_area):
+            pass
 
     def get_path(self):
         return self.path

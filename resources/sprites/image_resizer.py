@@ -7,4 +7,28 @@ def resize(filename):
     img.save("64x64_" + filename)
 
 
-resize('opened_chest.png')
+def dark_image(filename, d):
+    img = Image.open(filename)
+    pixels = img.load()
+    x, y = img.size
+
+    for i in range(x):
+        for j in range(y):
+            r, g, b = pixels[i, j]
+            sr = r // 8
+            sg = g // 8
+            sb = b // 8
+
+            r -= sr * d
+            g -= sg * d
+            b -= sb * d
+
+            r = max(r, 0)
+            g = max(g, 0)
+            b = max(b, 0)
+            pixels[i, j] = r, g, b
+
+    img.save(filename[:5] + f'_{d}' + filename[5:])
+
+
+dark_image('64x64_floor_3.png', 5)

@@ -4,7 +4,7 @@ import main
 import os
 
 
-def load_image(name, colorkey=None):
+def load_image(name):
     fullname = os.path.join('resources', 'sprites', name)
     image = pygame.image.load(fullname)
     return image
