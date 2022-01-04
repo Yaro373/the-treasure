@@ -26,6 +26,7 @@ class Inventory:
 
         surface = pygame.Surface((element_size * self.count - (element_size // 10 * (self.count - 1)),
                                  element_size))
+        surface.fill(self.background_color)
         x = (w - element_size * self.count) // 2 + (element_size // 10 * (self.count - 1)) // 2
         y = h - element_size
         for i in range(element_size // 10, surface.get_width(), element_size - element_size // 10):
