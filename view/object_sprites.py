@@ -170,8 +170,6 @@ class Chest(BaseObjectSprite):
     def open_chest(self):
         self.image = Chest.opened_chest_image
 
-    def close_chest(self):
-        self.image = Chest.closed_chest_image
 
 
 # TODO

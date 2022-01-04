@@ -8,15 +8,15 @@ from parameters import GAME_TITLE
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 800, 600
+    size = w, h = 800, 600
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption(GAME_TITLE)
     level_manager = view.level.LevelManager()
     level = level_manager.get_current_level()
 
-    health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha(screen)
-    hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png')).convert_alpha(screen)
-    speed_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_speed.png')).convert_alpha(screen)
+    health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha()
+    hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png')).convert_alpha()
+    speed_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_speed.png')).convert_alpha()
 
     font_size = 30
     font = pygame.font.SysFont('bahnschrift', font_size)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         level.dungeon.ghost_sprite_group.update(None)
         for sprite in level.dungeon.all_sprites:
             level.camera.apply(sprite)
-        level.camera.update(level.character, width, height)
+        level.camera.update(level.character, *size)
 
         screen.fill((0, 0, 0))
         level.dungeon.all_sprites.draw(screen)
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         screen.blit(text, (75, 90))
         screen.blit(speed_icon, (15, 90))
 
-        level.inventory.draw(screen)
+        level.inventory.draw()
 
         pygame.display.flip() # todo wall class
 
