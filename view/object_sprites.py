@@ -152,7 +152,6 @@ class Floor3(BaseObjectSprite):
                          Floor3.image_8, x, y, *group)
 
 
-
 class Chest(BaseObjectSprite):
     closed_chest_image = load_image('64x64_chest.png')
     opened_chest_image = load_image('64x64_opened_chest.png')
