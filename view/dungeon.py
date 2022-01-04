@@ -21,6 +21,7 @@ class Dungeon:
         self.ghost_sprite_group = pygame.sprite.Group()
         self.chest_sprite_group = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
+        self.sprites_matrix = [[[0] for i in range(len(self.data))] for j in range(len(self.data))]
         self.draw_dungeon()
 
     def draw_dungeon(self):
@@ -56,6 +57,9 @@ class Dungeon:
 
     def get_object_at(self, x, y):
         return self.data[x][y]
+
+    def get_sprite_at(self, x, y):
+        return self.sprites_matrix[x][y]
 
 
 class DungeonGenerator:

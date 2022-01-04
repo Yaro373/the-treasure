@@ -1,10 +1,10 @@
 from PIL import Image
 
 
-def resize(filename):
+def resize(filename, size):
     img = Image.open(filename)
-    img = img.resize((64, 64))
-    img.save("64x64_" + filename)
+    img = img.resize((size, size))
+    img.save(f"{size}x{size}_" + filename)
 
 
 def dark_image(filename, d):
@@ -31,4 +31,4 @@ def dark_image(filename, d):
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
 
-dark_image('64x64_floor_3.png', 5)
+resize('tea.png', 32)

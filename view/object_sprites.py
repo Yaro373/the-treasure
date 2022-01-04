@@ -1,9 +1,7 @@
-import random
-from PIL import Image
-
 from model.util import load_image
 from parameters import CELL_SIZE
 import view.level
+import view.inventory
 import pygame
 
 
@@ -157,7 +155,11 @@ class Chest(BaseObjectSprite):
     opened_chest_image = load_image('64x64_opened_chest.png')
 
     def __init__(self, x, y, *group):
-        super().__init__(Chest.closed_chest_image, x, y, *group)
+        # TODO убрать после тестирования
+        i = Chest.opened_chest_image
+        super().__init__(Chest.closed_chest_image, i, i, i, i, i, i, i, i, x, y,  *group)
+        self.showing = False
+        self.opened = False
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()
@@ -166,10 +168,32 @@ class Chest(BaseObjectSprite):
                 if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
                         (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
                     self.open_chest()
+        else:
+            if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
+                    (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
+                self.show_inventory()
+            else:
+                self.close_inventory()
 
+    # TODO оптимизировать после добавления полной генерации
     def open_chest(self):
-        self.image = Chest.opened_chest_image
+        if not self.opened:
+            self.image = Chest.opened_chest_image
+            view.level.LevelManager.get_current_level().set_chest_inventory(
+                view.inventory.ChestInventory())
+            self.opened = True
+            self.showing = True
 
+    def show_inventory(self):
+        if self.opened and not self.showing:
+            view.level.LevelManager.get_current_level().set_chest_inventory(
+                view.inventory.ChestInventory())
+            self.showing = True
+
+    def close_inventory(self):
+        if self.showing:
+            view.level.LevelManager.get_current_level().close_chest_inventory()
+            self.showing = False
 
 
 # TODO

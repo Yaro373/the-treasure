@@ -35,6 +35,7 @@ if __name__ == '__main__':
             if event.type == pygame.KEYUP:
                 level.dungeon.character_sprite_group.update(event)
 
+        level.dungeon.chest_sprite_group.update(None)
         level.dungeon.character_sprite_group.update(None)
         level.dungeon.ghost_sprite_group.update(None)
         for sprite in level.dungeon.all_sprites:
@@ -56,7 +57,8 @@ if __name__ == '__main__':
         screen.blit(text, (75, 90))
         screen.blit(speed_icon, (15, 90))
 
-        level.inventory.draw()
+        for inventory in level.inventories:
+            inventory.draw()
 
         pygame.display.flip() # todo wall class
 

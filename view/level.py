@@ -5,6 +5,10 @@ import view.inventory
 import parameters
 
 
+class ChestInventoryNotInstalled(Exception):
+    pass
+
+
 class LevelCreator:
     @staticmethod
     def create_level(data):
@@ -19,7 +23,15 @@ class Level:
         self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
                                                  self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
-        self.inventory = view.inventory.Inventory(5)
+        self.inventories = [view.inventory.Inventory(5)]
+
+    def set_chest_inventory(self, chest_inventory):
+        self.inventories.append(chest_inventory)
+
+    def close_chest_inventory(self):
+        if len(self.inventories) < 2:
+           raise ChestInventoryNotInstalled
+        self.inventories.pop(-1)
 
 
 class LevelManager:

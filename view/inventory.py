@@ -1,4 +1,5 @@
 import pygame
+import view.item_sprites
 
 
 class Inventory:
@@ -7,6 +8,8 @@ class Inventory:
         self.background_color = (139, 69, 19)
         self.cell_color = (255, 222, 173)
         self.hovered_cell_color = (255, 255, 173)
+        # TODO чтение из файла
+        self.items = [(2, 'Tea'), (4, 'Tea')]
 
     def set_count(self, count):
         self.count = count
@@ -25,7 +28,6 @@ class Inventory:
                                  element_size))
         x = (w - element_size * self.count) // 2 + (element_size // 10 * (self.count - 1)) // 2
         y = h - element_size
-        surface.fill(self.background_color)
         for i in range(element_size // 10, surface.get_width(), element_size - element_size // 10):
             cell_x = i
             cell_y = element_size // 10
@@ -40,13 +42,14 @@ class Inventory:
 
 
 class ChestInventory:
-    def __init__(self, count):
+    def __init__(self):
         self.count = 3
         self.background_color = (200, 200, 200)
         self.cell_color = (100, 100, 100)
-        self.hovered_cell_color = (50, 50, 50)
+        self.hovered_cell_color = (150, 150, 150)
 
-    def draw(self, screen):
+    def draw(self):
+        screen = pygame.display.get_surface()
         mouse_pos = pygame.mouse.get_pos()
 
         w, h = screen.get_size()
