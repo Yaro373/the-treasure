@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import csv
 import os.path
@@ -34,6 +36,10 @@ if __name__ == '__main__':
                 level.dungeon.chest_sprite_group.update(event)
             if event.type == pygame.KEYUP:
                 level.dungeon.character_sprite_group.update(event)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                for inventory in level.inventories.values():
+                    if inventory is not None:
+                        inventory.check_click()
 
         level.dungeon.chest_sprite_group.update(None)
         level.dungeon.character_sprite_group.update(None)
@@ -57,8 +63,9 @@ if __name__ == '__main__':
         screen.blit(text, (75, 90))
         screen.blit(speed_icon, (15, 90))
 
-        for inventory in level.inventories:
-            inventory.draw()
+        for inventory in level.inventories.values():
+            if inventory is not None:
+                inventory.draw()
 
         pygame.display.flip() # todo wall class
 

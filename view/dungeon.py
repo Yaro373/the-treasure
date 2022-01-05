@@ -20,6 +20,7 @@ class Dungeon:
         self.character_sprite_group = pygame.sprite.Group()
         self.ghost_sprite_group = pygame.sprite.Group()
         self.chest_sprite_group = pygame.sprite.Group()
+        self.item_sprite_group = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.sprites_matrix = [[[0] for i in range(len(self.data))] for j in range(len(self.data))]
         self.draw_dungeon()
@@ -36,6 +37,7 @@ class Dungeon:
                 else:
                     Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
                            self.all_sprites)
+        Chest(3 * CELL_SIZE, 3 * CELL_SIZE, self.chest_sprite_group, self.all_sprites)
 
     def get_creature_sprite_neighbours(self, sprite, radius):
         x, y = sprite.get_dung_coords()
@@ -101,10 +103,10 @@ class DungeonGenerator:
             # если у точки есть непосещенные соседи
 
             if len(unvisited_cells) > 0:
-                # перемещяемся
+                # перемещаемся
                 choise = random.choice(unvisited_cells)
                 stek.append(current_cell)
-                if choise == 1:  # лево
+                if choise == 1:  # влево
                     result[current_cell[0]][current_cell[1] - 2] = NOTHING_SIGN
                     result[current_cell[0]][current_cell[1] - 1] = NOTHING_SIGN
                     current_cell = current_cell[0], current_cell[1] - 2

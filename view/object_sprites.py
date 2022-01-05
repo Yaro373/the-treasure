@@ -179,15 +179,13 @@ class Chest(BaseObjectSprite):
     def open_chest(self):
         if not self.opened:
             self.image = Chest.opened_chest_image
-            view.level.LevelManager.get_current_level().set_chest_inventory(
-                view.inventory.ChestInventory())
+            view.level.LevelManager.get_current_level().open_chest_inventory()
             self.opened = True
             self.showing = True
 
     def show_inventory(self):
         if self.opened and not self.showing:
-            view.level.LevelManager.get_current_level().set_chest_inventory(
-                view.inventory.ChestInventory())
+            view.level.LevelManager.get_current_level().open_chest_inventory()
             self.showing = True
 
     def close_inventory(self):

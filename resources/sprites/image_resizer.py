@@ -31,4 +31,4 @@ def dark_image(filename, d):
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
 
-resize('tea.png', 32)
+resize('invisibility_potion.png', 48)

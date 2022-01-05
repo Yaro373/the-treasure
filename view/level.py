@@ -5,8 +5,8 @@ import view.inventory
 import parameters
 
 
-class ChestInventoryNotInstalled(Exception):
-    pass
+main_inventory = 'main_inventory'
+chest_inventory = 'chest_inventory'
 
 
 class LevelCreator:
@@ -23,15 +23,14 @@ class Level:
         self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
                                                  self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
-        self.inventories = [view.inventory.Inventory(5)]
+        self.inventories = {main_inventory: view.inventory.Inventory(5),
+                            chest_inventory: None}
 
-    def set_chest_inventory(self, chest_inventory):
-        self.inventories.append(chest_inventory)
+    def open_chest_inventory(self):
+        self.inventories[chest_inventory] = view.inventory.ChestInventory()
 
     def close_chest_inventory(self):
-        if len(self.inventories) < 2:
-           raise ChestInventoryNotInstalled
-        self.inventories.pop(-1)
+        self.inventories[chest_inventory] = None
 
 
 class LevelManager:

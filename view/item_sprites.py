@@ -1,23 +1,16 @@
 from model.util import load_image
-import pygame
 
+size = 48
 
-class BaseItemSprite(pygame.sprite.Sprite):
-    def __init__(self, image, *group):
-        super().__init__(group)
-        self.image = image
-        self.rect = self.image.get_rect()
-
-
-class Tea(BaseItemSprite):
-    image = load_image('32x32_tea.png')
-
-    def __init__(self, num, *group):
-        super().__init__(Tea.image, *group)
-        self.num = num
-
-    def set_num(self, num):
-        self.num = num
-
-    def get_num(self):
-        return self.num
+images = {
+    'tea': load_image('48x48_tea.png'),
+    'hot_tea': load_image('48x48_hot_tea.png'),
+    'oil': load_image('48x48_oil.png'),
+    'bag': load_image('48x48_bag.png'),
+    'old_clock': load_image('48x48_old_clock.png'),
+    'hearing_potion': load_image('48x48_hearing_potion.png'),
+    'speed_potion': load_image('48x48_speed_potion.png'),
+    'music_box': load_image('48x48_music_box.png'),
+    'snow_ball': load_image('48x48_snow_ball.png'),
+    'invisibility_potion': load_image('48x48_invisibility_potion.png'),
+}
