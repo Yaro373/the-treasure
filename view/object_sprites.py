@@ -133,7 +133,7 @@ class Floor2(BaseObjectSprite):
 
 
 class Floor3(BaseObjectSprite):
-    image = load_image('64x64_floor_3.png') # е
+    image = load_image('64x64_floor_3.png')
     image_0 = load_image('64x64_floor_3.png')
     image_1 = load_image('64x64_1_floor_3.png')
     image_2 = load_image('64x64_2_floor_3.png')
