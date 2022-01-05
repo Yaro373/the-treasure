@@ -226,12 +226,16 @@ class DungeonGenerator:
         choice = random.choice(choice_data)  # 1 - лево, 2 - верх, 3 - право, 4 - низ
         if choice == 1:
             result[x - 1][y + 1] = NOTHING_SIGN
+            result[x - 2][y + 1] = NOTHING_SIGN
         if choice == 2:
             result[x + 1][y - 1] = NOTHING_SIGN
+            result[x + 1][y - 2] = NOTHING_SIGN
         if choice == 3:
             result[x + 3][y + 1] = NOTHING_SIGN
+            result[x + 4][y + 1] = NOTHING_SIGN
         if choice == 4:
             result[x + 1][y + 3] = NOTHING_SIGN
+            result[x + 1][y + 4] = NOTHING_SIGN
 
         return visited, unvisited_cells_num, result
 
