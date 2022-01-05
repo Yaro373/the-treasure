@@ -129,12 +129,14 @@ class Inventory(BaseInventory):
 
 
 class ChestInventory(BaseInventory):
-    def __init__(self):
+    def __init__(self, chest):
         super().__init__('chest',
-                         [None, 'tea', None],
+                         chest.items,
                          (200, 200, 200),
                          (100, 100, 100),
                          (150, 150, 150))
+        self.chest = chest
 
     def draw(self):
         super().basic_draw(0.5)
+        self.chest.items = self.items.copy()

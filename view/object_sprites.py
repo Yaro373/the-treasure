@@ -160,6 +160,8 @@ class Chest(BaseObjectSprite):
         super().__init__(Chest.closed_chest_image, i, i, i, i, i, i, i, i, x, y,  *group)
         self.showing = False
         self.opened = False
+        # TODO чтение из файла
+        self.items = ['tea', None, 'oil']
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()
@@ -179,13 +181,13 @@ class Chest(BaseObjectSprite):
     def open_chest(self):
         if not self.opened:
             self.image = Chest.opened_chest_image
-            view.level.LevelManager.get_current_level().open_chest_inventory()
+            view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.opened = True
             self.showing = True
 
     def show_inventory(self):
         if self.opened and not self.showing:
-            view.level.LevelManager.get_current_level().open_chest_inventory()
+            view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.showing = True
 
     def close_inventory(self):

@@ -26,8 +26,8 @@ class Level:
         self.inventories = {main_inventory: view.inventory.Inventory(5),
                             chest_inventory: None}
 
-    def open_chest_inventory(self):
-        self.inventories[chest_inventory] = view.inventory.ChestInventory()
+    def open_chest_inventory(self, chest):
+        self.inventories[chest_inventory] = view.inventory.ChestInventory(chest)
 
     def close_chest_inventory(self):
         self.inventories[chest_inventory] = None
