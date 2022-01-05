@@ -1,8 +1,11 @@
+import random
+
 from model.util import load_image
 from parameters import CELL_SIZE
 import view.level
 import view.inventory
 import pygame
+import view.items
 
 
 class BaseObjectSprite(pygame.sprite.Sprite):
@@ -160,6 +163,24 @@ class Chest(BaseObjectSprite):
         super().__init__(Chest.closed_chest_image, i, i, i, i, i, i, i, i, x, y,  *group)
         self.showing = False
         self.opened = False
+        # TODO чтение из файла
+        self.items = self.generate_items()
+
+    def generate_items(self):
+        items = ['oil', None, None]
+        random_items = view.items.RANDOM_ITEMS_LIST.items()
+        for i in range(0, 2):
+            if random.random() < 0.5:  # Вещь будет добавлена с вероятностью 0.5
+                continue
+            ch = random.random()
+            d = 0
+            for k, v in random_items:
+                d += v
+                if d > ch:
+                    items[i + 1] = k
+                    break
+        random.shuffle(items)
+        return items
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()
@@ -179,13 +200,13 @@ class Chest(BaseObjectSprite):
     def open_chest(self):
         if not self.opened:
             self.image = Chest.opened_chest_image
-            view.level.LevelManager.get_current_level().open_chest_inventory()
+            view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.opened = True
             self.showing = True
 
     def show_inventory(self):
         if self.opened and not self.showing:
-            view.level.LevelManager.get_current_level().open_chest_inventory()
+            view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.showing = True
 
     def close_inventory(self):
