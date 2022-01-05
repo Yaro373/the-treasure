@@ -17,8 +17,9 @@ class ReplaceItem:
 
 
 class BaseInventory:
-    def __init__(self, items, count, bg_color, c_color, h_c_color):
-        self.count = count
+    def __init__(self, short_name, items, bg_color, c_color, h_c_color):
+        self.short_name = short_name
+        self.count = len(items)
         self.background_color = bg_color
         self.cell_color = c_color
         self.hovered_cell_color = h_c_color
@@ -59,13 +60,12 @@ class BaseInventory:
                     pygame.draw.rect(surface, self.hovered_cell_color,
                                      (cell_x, cell_y, cell_size, cell_size))
                     drew = False
-                if Temp.temp is None and self.get_cell_item_name(n) in \
+                if Temp.temp is None and self.items[n] in \
                         view.item_sprites.images.keys():
-                    Temp.temp = ReplaceItem(self.get_short_name(), n,
-                                            self.get_cell_item_name(n), True)
-                    self.items.pop(n)
+                    Temp.temp = ReplaceItem(self.short_name, n, self.items[n], True)
+                    self.items[n] = None
                 elif Temp.temp is not None:
-                    p = self.items.get(n, None)
+                    p = self.items[n]
                     self.items[n] = Temp.temp.item_name
                     if Temp.temp.need_back and n == Temp.temp.start_cell_index:
                         Temp.temp = None
@@ -74,12 +74,12 @@ class BaseInventory:
                                                 p, False)
             if Temp.temp is not None and not Temp.temp.need_back and \
                     Temp.temp.start_cell_index == n and \
-                    Temp.temp.start_from == self.get_short_name():
+                    Temp.temp.start_from == self.short_name:
                 self.items[n] = Temp.temp.item_name
                 Temp.temp = None
             if not drew:
                 pygame.draw.rect(surface, self.cell_color, (cell_x, cell_y, cell_size, cell_size))
-            self.add_item_to_cell(self.items.get(n, None), surface, i, element_size)
+            self.add_item_to_cell(self.items[n], surface, i, element_size)
             n += 1
 
         pygame.display.get_surface().blit(surface, (x, y))
@@ -108,9 +108,6 @@ class BaseInventory:
     def check_click():
         Temp.click_coord = pygame.mouse.get_pos()
 
-    def get_cell_item_name(self, num):
-        return self.items.get(num, None)
-
     def get_short_name(self):
         pass
 
@@ -118,9 +115,8 @@ class BaseInventory:
 class Inventory(BaseInventory):
     def __init__(self, count):
         # TODO чтение из файла
-        super().__init__({0: 'tea', 1: 'hot_tea', 2: 'oil', 3: 'bag',
-                          4: 'old_clock', 5: 'hearing_potion', 6: 'speed_potion',
-                          7: 'music_box', 8: 'snow_ball', 9: 'invisibility_potion'}, 10,
+        super().__init__('main',
+                         ['tea', None, None, 'hot_tea', None],
                          (139, 69, 19),
                          (255, 222, 173),
                          (255, 255, 173))
@@ -131,19 +127,14 @@ class Inventory(BaseInventory):
     def draw(self):
         super().basic_draw(1)
 
-    def get_short_name(self):
-        return 'main'
-
 
 class ChestInventory(BaseInventory):
     def __init__(self):
-        super().__init__({1: 'tea'}, 3,
+        super().__init__('chest',
+                         [None, 'tea', None],
                          (200, 200, 200),
                          (100, 100, 100),
                          (150, 150, 150))
 
     def draw(self):
         super().basic_draw(0.5)
-
-    def get_short_name(self):
-        return 'chest'
