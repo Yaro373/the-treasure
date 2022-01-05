@@ -1,5 +1,5 @@
 import pygame
-import view.item_sprites
+import view.items
 import view.level
 
 
@@ -61,7 +61,7 @@ class BaseInventory:
                                      (cell_x, cell_y, cell_size, cell_size))
                     drew = False
                 if Temp.temp is None and self.items[n] in \
-                        view.item_sprites.images.keys():
+                        view.items.images.keys():
                     Temp.temp = ReplaceItem(self.short_name, n, self.items[n], True)
                     self.items[n] = None
                 elif Temp.temp is not None:
@@ -86,9 +86,9 @@ class BaseInventory:
         mouse_pos = pygame.mouse.get_pos()
         if Temp.temp is not None and Temp.temp.need_back:
             pygame.display.get_surface().blit(
-                view.item_sprites.images[Temp.temp.item_name],
-                (mouse_pos[0] - view.item_sprites.size // 2,
-                 mouse_pos[1] - view.item_sprites.size // 2))
+                view.items.images[Temp.temp.item_name],
+                (mouse_pos[0] - view.items.size // 2,
+                 mouse_pos[1] - view.items.size // 2))
 
     @staticmethod
     def is_coord_in_cell(cell_x, cell_y, x, y, target_x, target_y, cell_size):
@@ -99,7 +99,7 @@ class BaseInventory:
     def add_item_to_cell(name, surface, i, element_size):
         if name is None:
             return
-        image = view.item_sprites.images[name]
+        image = view.items.images[name]
         image_part_size = image.get_rect().width // 2
         surface.blit(image, (i + (element_size - element_size // 5) // 2 - image_part_size,
                      element_size // 2 - image_part_size))

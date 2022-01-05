@@ -1,8 +1,11 @@
+import random
+
 from model.util import load_image
 from parameters import CELL_SIZE
 import view.level
 import view.inventory
 import pygame
+import view.items
 
 
 class BaseObjectSprite(pygame.sprite.Sprite):
@@ -161,7 +164,23 @@ class Chest(BaseObjectSprite):
         self.showing = False
         self.opened = False
         # TODO чтение из файла
-        self.items = ['tea', None, 'oil']
+        self.items = self.generate_items()
+
+    def generate_items(self):
+        items = ['oil', None, None]
+        random_items = view.items.RANDOM_ITEMS_LIST.items()
+        for i in range(0, 2):
+            if random.random() < 0.5:  # Вещь будет добавлена с вероятностью 0.5
+                continue
+            ch = random.random()
+            d = 0
+            for k, v in random_items:
+                d += v
+                if d > ch:
+                    items[i + 1] = k
+                    break
+        random.shuffle(items)
+        return items
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()

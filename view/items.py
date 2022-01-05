@@ -2,6 +2,19 @@ from model.util import load_image
 
 size = 48
 
+RANDOM_ITEMS_LIST = {
+    'tea': 0.25,
+    'hot_tea': 0.15,
+    'dream_catcher': 0.03,
+    'bag': 0.15,
+    'old_clock': 0.02,
+    'hearing_potion': 0.10,
+    'speed_potion': 0.10,
+    'music_box': 0.05,
+    'snow_ball': 0.05,
+    'invisibility_potion': 0.10,
+}
+
 images = {
     'tea': load_image('48x48_tea.png'),
     'hot_tea': load_image('48x48_hot_tea.png'),
