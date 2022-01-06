@@ -60,20 +60,16 @@ class BaseInventory:
                     pygame.draw.rect(surface, self.hovered_cell_color,
                                      (cell_x, cell_y, cell_size, cell_size))
                     drew = False
-                if Temp.temp is None and self.items[n] in \
-                        view.items.images.keys():
+                if Temp.temp is None and self.items[n] in view.items.images.keys():
                     Temp.temp = ReplaceItem(self.short_name, n, self.items[n], True)
                     self.items[n] = None
                 elif Temp.temp is not None:
                     p = self.items[n]
                     self.items[n] = Temp.temp.item_name
-                    if Temp.temp.need_back and n == Temp.temp.start_cell_index:
-                        Temp.temp = None
-                    elif Temp.temp.need_back:
+                    if Temp.temp.need_back:
                         Temp.temp = ReplaceItem(Temp.temp.start_from, Temp.temp.start_cell_index,
                                                 p, False)
-            if Temp.temp is not None and not Temp.temp.need_back and \
-                    Temp.temp.start_cell_index == n and \
+            if Temp.temp is not None and not Temp.temp.need_back and Temp.temp.start_cell_index == n and \
                     Temp.temp.start_from == self.short_name:
                 self.items[n] = Temp.temp.item_name
                 Temp.temp = None
@@ -83,7 +79,6 @@ class BaseInventory:
             n += 1
 
         pygame.display.get_surface().blit(surface, (x, y))
-        mouse_pos = pygame.mouse.get_pos()
         if Temp.temp is not None and Temp.temp.need_back:
             pygame.display.get_surface().blit(
                 view.items.images[Temp.temp.item_name],
