@@ -23,14 +23,19 @@ class Level:
         self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
                                                  self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
-        self.inventories = {main_inventory: view.inventory.Inventory(5),
-                            chest_inventory: None}
+        self.main_inventory = view.inventory.Inventory(5)
+        self.chest_inventory = None
 
     def open_chest_inventory(self, chest):
-        self.inventories[chest_inventory] = view.inventory.ChestInventory(chest)
+        self.chest_inventory = view.inventory.ChestInventory(chest)
 
     def close_chest_inventory(self):
-        self.inventories[chest_inventory] = None
+        self.chest_inventory = None
+
+    def draw_inventories(self):
+        self.main_inventory.draw()
+        if self.chest_inventory is not None:
+            self.chest_inventory.draw()
 
 
 class LevelManager:

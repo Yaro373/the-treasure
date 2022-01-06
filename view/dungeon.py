@@ -58,27 +58,40 @@ class Dungeon:
         for row in range(0, len(self.data)):
             for col in range(0, len(self.data)):
                 if self.data[row][col] == WALL_SIGN:
-                    Wall1(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
-                          self.all_sprites)
-                elif self.data[row][col] == UNBREAKABLE_WALL_SIGN:
-                    UnbreakableWall(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
-                                    self.all_sprites)
-                elif self.data[row][col] == CHEST_SIGN:
-                    Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
+                    wall1 = Wall1(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
                            self.all_sprites)
-                    Chest(row * CELL_SIZE, col * CELL_SIZE, self.chest_sprite_group,
-                           self.all_sprites)
-                else:
-                    Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
-                           self.all_sprites)
-        Chest(3 * CELL_SIZE, 3 * CELL_SIZE, self.chest_sprite_group, self.all_sprites)
 
-    def get_creature_sprite_neighbours(self, sprite, radius):
+                    self.sprites_matrix[row][col] = (wall1, )
+
+                elif self.data[row][col] == UNBREAKABLE_WALL_SIGN:
+                    uwall = UnbreakableWall(row * CELL_SIZE, col * CELL_SIZE,
+                                            self.walls_sprite_group, self.all_sprites)
+
+                    self.sprites_matrix[row][col] = (uwall, )
+
+                elif self.data[row][col] == CHEST_SIGN:
+                    floor1 = Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
+                           self.all_sprites)
+                    chest = Chest(row * CELL_SIZE, col * CELL_SIZE, self.chest_sprite_group,
+                           self.all_sprites)
+
+                    self.sprites_matrix[row][col] = (floor1, chest, )
+
+                else:
+                    floor1 = Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
+                           self.all_sprites)
+
+                    self.sprites_matrix[row][col] = (floor1, )
+
+        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, self.ghost_sprite_group, self.all_sprites)
+
+    def get_neighbours_coords(self, sprite, radius):
         x, y = sprite.get_dung_coords()
         left_x = max(x - radius, 0)
         right_x = min(x + radius, len(self.data) - 1)
         up_y = max(y - radius, 0)
         down_y = min(y + radius, len(self.data) - 1)
+
         result = {0: [], 1: [], 2: [], 3: [], 4: []}
         result[0].append((x, y))
         for i in range(max(0, y - 1), up_y - 1, -1):
@@ -89,6 +102,36 @@ class Dungeon:
             result[4].append((i, y))
         for i in range(min(len(self.data) - 1, x + 1), right_x + 1):
             result[2].append((i, y))
+        return result
+
+    def get_light_area(self, character, radius):
+        neighbours = self.get_neighbours_coords(character, radius)
+        result = []
+
+        for k, v in neighbours.items():
+            degree = 8 - radius
+            for el in v:
+                result.append((self.sprites_matrix[el[0]][el[1]], degree))
+                if k in (1, 3):
+                    x1, x2, y = el[0] - 1, el[0] + 1, el[1]
+                    result.append((self.sprites_matrix[x1][y], degree))
+                    result.append((self.sprites_matrix[x2][y], degree))
+                elif k in (2, 4):
+                    x, y1, y2 = el[0], el[1] + 1, el[1] - 1
+                    result.append((self.sprites_matrix[x][y1], degree))
+                    result.append((self.sprites_matrix[x][y2], degree))
+                degree += 1
+                if self.data[el[0]][el[1]] == WALL_SIGN:
+                    break
+        return result
+
+    # TODO улучшить
+    def get_creature_sprite_neighbour(self, sprite, radius, exclude_walls=False):
+        coords = self.get_creature_sprite_neighbours_coords(sprite, radius, True)
+        result = []
+        for k, v in coords.items():
+            for el in v:
+                result.append(self.sprites_matrix[el[0]][el[1]])
         return result
 
     def get_object_at(self, x, y):

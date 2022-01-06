@@ -12,7 +12,7 @@ class BaseObjectSprite(pygame.sprite.Sprite):
     def __init__(self, image, image1, image2, image3, image4, image5, image6, image7, image8,
                  x, y, *group):
         super().__init__(group)
-        self.image = image
+        self.image = image8
         self.light_images = [image1, image2, image3, image4, image5, image6, image7, image8]
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -24,6 +24,9 @@ class BaseObjectSprite(pygame.sprite.Sprite):
     def set_light(self, light):
         self.light = light
         self.image = self.light_images[self.light]
+
+    def get_dung_coords(self):
+        return self.dung_x, self.dung_y
 
 
 class Wall1(BaseObjectSprite):
@@ -83,20 +86,15 @@ class Wall3(BaseObjectSprite):
 # TODO поменять спрайты
 class UnbreakableWall(BaseObjectSprite):
     image = load_image('64x64_wall_3.png')
-    image_0 = load_image('64x64_wall_3.png')
-    image_1 = load_image('64x64_1_wall_3.png')
-    image_2 = load_image('64x64_2_wall_3.png')
-    image_3 = load_image('64x64_3_wall_3.png')
-    image_4 = load_image('64x64_4_wall_3.png')
-    image_5 = load_image('64x64_5_wall_3.png')
-    image_6 = load_image('64x64_6_wall_3.png')
-    image_7 = load_image('64x64_7_wall_3.png')
-    image_8 = load_image('64x64_8_wall_3.png')
 
     def __init__(self, x, y, *group):
-        super().__init__(Wall3.image, Wall3.image_1, Wall3.image_2, Wall3.image_3,
-                         Wall3.image_4, Wall3.image_5, Wall3.image_6, Wall3.image_7,
-                         Wall3.image_8, x, y, *group)
+        i = self.image
+        super().__init__(i, i, i, i, i, i, i, i, i, x, y, *group)
+        self.image = UnbreakableWall.image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 
 
 class Floor1(BaseObjectSprite):

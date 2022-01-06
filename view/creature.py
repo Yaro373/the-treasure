@@ -2,6 +2,7 @@ import pygame
 import random
 from parameters import CELL_SIZE
 from model.util import load_image
+import model.value_manager
 import view.level
 import view.dungeon
 import time
@@ -32,15 +33,21 @@ class Character(Creature):
     def __init__(self, x, y, *group):
         super().__init__(Character.image, x, y, *group)
         self.speed = 4
+        self.lighting_area = 1
         self.move_data = [0, 0, 0, 0]
-        self.lighting_area = 5
         self.prev_coord = None
         self.prev_d_coord = None
         self.path = [self.get_dung_coords()]
+        self.prev_light_sprites = []
+        # TODO загрузка из файла
+        self.prev_light_time = -1
 
     def update(self, event):
+        self.lighting_area = model.value_manager.ValueManager.light
+        self.speed = model.value_manager.ValueManager.speed
+
         level = view.level.LevelManager.get_current_level()
-        neighbours = level.dungeon.get_creature_sprite_neighbours(self, 0)
+        neighbours = level.dungeon.get_neighbours_coords(self, 0)
         if event is not None:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -98,11 +105,22 @@ class Character(Creature):
         self.prev_coord = coord
         self.prev_d_coord = d_coord
 
-        for ngh in level.dungeon.get_creature_sprite_neighbours(self, self.lighting_area):
-            pass
+        for sprite in self.prev_light_sprites:
+            sprite.set_light(7)
+        self.prev_light_sprites.clear()
+        for ngh in level.dungeon.get_light_area(self, self.lighting_area):
+            for sprite in ngh[0]:
+                sprite.set_light(ngh[1])
+                self.prev_light_sprites.append(sprite)
 
     def get_path(self):
         return self.path
+    #
+    # def update(self, light):
+    #     current = time.time()
+    #     if current - self.prev_light_time > 120:
+    #         self.lighting_area = min(0, self.lighting_area - 1)
+    #         self.prev_light_time = current
 
 
 class Ghost(Creature):
@@ -113,7 +131,7 @@ class Ghost(Creature):
         self.speed = 1
         self.see_radius = 5
         self.attacking = False
-        self.attack_time = 150
+        self.attack_time = 4
         self.start_attack_moment = -1
         self.prev_direction = random.choice([1, 2, 3, 4])
         self.main_hero_pos_index = -1
@@ -167,7 +185,7 @@ class Ghost(Creature):
         elif self.get_dung_coords() == self.get_d_dung_coords() != self.prev_point:
             self.prev_point = self.get_dung_coords()
             self.clear_cnt_speed(direction, cnt_speed)
-            for k, v in level.dungeon.get_creature_sprite_neighbours(self, 1).items():
+            for k, v in level.dungeon.get_neighbours_coords(self, 1).items():
                 if direction in (1, 3):
                     if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
@@ -181,7 +199,7 @@ class Ghost(Creature):
         self.f_x += (self.rect.x - prev_pos[0])
         self.f_y += (self.rect.y - prev_pos[1])
         if not self.attacking:
-            neighbours = level.dungeon.get_creature_sprite_neighbours(self, self.see_radius)
+            neighbours = level.dungeon.get_neighbours_coords(self, self.see_radius)
             main_hero_coords = level.character.get_dung_coords()
             for coords in neighbours[direction]:
                 if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:

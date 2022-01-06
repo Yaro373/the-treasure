@@ -46,35 +46,34 @@ class BaseInventory:
             cell_x, cell_y = i, element_size // 10
             cell_size = element_size - element_size // 5
 
-            drew = False
             if self.is_coord_in_cell(cell_x, cell_y, x, y, mouse_pos[0], mouse_pos[1], cell_size):
                 pygame.draw.rect(surface, self.hovered_cell_color,
                                  (cell_x, cell_y, cell_size, cell_size))
-                drew = True
+            else:
+                pygame.draw.rect(surface, self.cell_color, (cell_x, cell_y, cell_size, cell_size))
 
             if Temp.click_coord is not None \
                     and self.is_coord_in_cell(cell_x, cell_y, x, y,
                                               Temp.click_coord[0], Temp.click_coord[1], cell_size):
                 Temp.click_coord = None
-                if not drew:
-                    pygame.draw.rect(surface, self.hovered_cell_color,
-                                     (cell_x, cell_y, cell_size, cell_size))
-                    drew = False
-                if Temp.temp is None and self.items[n] in view.items.images.keys():
+                if Temp.temp is None and self.items[n] in \
+                        view.items.images.keys():
                     Temp.temp = ReplaceItem(self.short_name, n, self.items[n], True)
                     self.items[n] = None
                 elif Temp.temp is not None:
                     p = self.items[n]
                     self.items[n] = Temp.temp.item_name
-                    if Temp.temp.need_back:
+                    if Temp.temp.need_back and n == Temp.temp.start_cell_index and \
+                            self.short_name == Temp.temp.start_from:
+                        Temp.temp = None
+                    elif Temp.temp.need_back:
                         Temp.temp = ReplaceItem(Temp.temp.start_from, Temp.temp.start_cell_index,
                                                 p, False)
-            if Temp.temp is not None and not Temp.temp.need_back and Temp.temp.start_cell_index == n and \
+            if Temp.temp is not None and not Temp.temp.need_back and \
+                    Temp.temp.start_cell_index == n and \
                     Temp.temp.start_from == self.short_name:
                 self.items[n] = Temp.temp.item_name
                 Temp.temp = None
-            if not drew:
-                pygame.draw.rect(surface, self.cell_color, (cell_x, cell_y, cell_size, cell_size))
             self.add_item_to_cell(self.items[n], surface, i, element_size)
             n += 1
 
@@ -103,15 +102,12 @@ class BaseInventory:
     def check_click():
         Temp.click_coord = pygame.mouse.get_pos()
 
-    def get_short_name(self):
-        pass
-
 
 class Inventory(BaseInventory):
     def __init__(self, count):
         # TODO чтение из файла
         super().__init__('main',
-                         ['tea', None, None, 'hot_tea', None],
+                         ['oil', 'oil', 'oil', 'oil', None],
                          (139, 69, 19),
                          (255, 222, 173),
                          (255, 255, 173))
@@ -121,6 +117,10 @@ class Inventory(BaseInventory):
 
     def draw(self):
         super().basic_draw(1)
+
+    def check_use(self):
+        view.items.Item.use(Temp.temp.item_name)
+        Temp.temp = None
 
 
 class ChestInventory(BaseInventory):
