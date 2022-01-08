@@ -60,7 +60,7 @@ class ValueManager:
             'health': str(ValueManager.health),
             'hearing': str(ValueManager.hearing),
             'speed': str(ValueManager.speed),
-            'light': str(ValueManager.light)
+            'light': str(ValueManager.light),
         }
 
     @staticmethod

@@ -47,7 +47,7 @@ class Character(Creature):
         self.speed = model.value_manager.ValueManager.speed
 
         level = view.level.LevelManager.get_current_level()
-        neighbours = level.dungeon.get_neighbours_coords(self, 0)
+        neighbours = level.dungeon.get_neighbours_coords(self.get_dung_coords(), 0)
         if event is not None:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -109,6 +109,7 @@ class Character(Creature):
             sprite.set_light(7)
         self.prev_light_sprites.clear()
         for ngh in level.dungeon.get_light_area(self, self.lighting_area):
+            print(ngh)
             for sprite in ngh[0]:
                 sprite.set_light(ngh[1])
                 self.prev_light_sprites.append(sprite)
@@ -185,7 +186,7 @@ class Ghost(Creature):
         elif self.get_dung_coords() == self.get_d_dung_coords() != self.prev_point:
             self.prev_point = self.get_dung_coords()
             self.clear_cnt_speed(direction, cnt_speed)
-            for k, v in level.dungeon.get_neighbours_coords(self, 1).items():
+            for k, v in level.dungeon.get_neighbours_coords(self.get_dung_coords(), 1).items():
                 if direction in (1, 3):
                     if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
@@ -199,7 +200,7 @@ class Ghost(Creature):
         self.f_x += (self.rect.x - prev_pos[0])
         self.f_y += (self.rect.y - prev_pos[1])
         if not self.attacking:
-            neighbours = level.dungeon.get_neighbours_coords(self, self.see_radius)
+            neighbours = level.dungeon.get_neighbours_coords(self.get_dung_coords(), self.see_radius)
             main_hero_coords = level.character.get_dung_coords()
             for coords in neighbours[direction]:
                 if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
