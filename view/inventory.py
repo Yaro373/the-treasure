@@ -109,8 +109,10 @@ class Inventory(BaseInventory):
         super().__init__('main',
                          ['oil', 'oil', 'oil', 'oil', None],
                          (139, 69, 19),
-                         (255, 222, 173),
-                         (255, 255, 173))
+                         (142, 142, 97),
+                         (176, 176, 151))
+                         # (255, 222, 173),
+                         # (255, 255, 173))
 
     def set_count(self, count):
         self.count = count
