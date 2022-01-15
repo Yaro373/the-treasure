@@ -60,7 +60,7 @@ class Level:
 
 
 class LevelManager:
-    level_num = 5
+    level_num = 1
     level = LevelCreator.new_level(level_num)
 
     @staticmethod
@@ -70,6 +70,7 @@ class LevelManager:
     @staticmethod
     def next_level():
         LevelManager.level_num += 1
+        LevelManager.level.dungeon.kill()
         LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
 
     @staticmethod

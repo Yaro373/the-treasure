@@ -39,7 +39,6 @@ class Dungeon:
                 if self.data[row][col] == WALL_SIGN:
                     wall1 = Wall1(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
                            self.all_sprites)
-
                     self.sprites_matrix[row][col] = (wall1, )
 
                 elif self.data[row][col] == UNBREAKABLE_WALL_SIGN:
@@ -77,6 +76,8 @@ class Dungeon:
         if event is not None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 level.character.fire(self.weapon_sprite_group, self.all_sprites)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
+                view.level.LevelManager.next_level()
         for ghost in self.ghost_sprite_group:
             ghost.fire(self.weapon_sprite_group, self.all_sprites)
 
@@ -131,6 +132,10 @@ class Dungeon:
 
     def get_sprite_at(self, x, y):
         return self.sprites_matrix[x][y]
+
+    def kill(self):
+        for sprite in self.all_sprites:
+            sprite.kill()
 
 
 class DungeonGenerator:

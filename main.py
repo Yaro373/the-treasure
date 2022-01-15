@@ -18,9 +18,7 @@ if __name__ == '__main__':
     # TODO смена уровней
     level_manager = view.level.LevelManager()
     level_manager.next_level()
-
     model.value_manager.ValueManager.initialize()
-    level = level_manager.get_current_level()
 
     health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha()
     hearing_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_hearing.png')).convert_alpha()
@@ -35,6 +33,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     while loop:
         events = False
+        level = level_manager.get_current_level()
         for event in pygame.event.get():
             events = True
             if event.type == pygame.QUIT:

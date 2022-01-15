@@ -61,7 +61,6 @@ class ValueManager:
         ValueManager.light = min(after, 7)
         ValueManager.light = max(after, 0)
         ValueManager.update_light_data.append((ValueManager.light - light, for_time, pygame.time.get_ticks()))
-        print(ValueManager.light)
 
     @staticmethod
     def set_inventory(inventory):
