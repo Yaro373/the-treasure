@@ -54,6 +54,10 @@ class Level:
         if self.chest_inventory is not None:
             self.chest_inventory.draw()
 
+    def reload_main_inventory(self):
+        print(self.character.items)
+        self.main_inventory = view.inventory.Inventory(self.character.items)
+
 
 class LevelManager:
     level_num = 5

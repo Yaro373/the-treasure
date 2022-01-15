@@ -7,12 +7,14 @@ class ValueManager:
     hearing = None
     speed = None
     light = None
+    inventory_size = 5
 
     inventory = [None, 'oil', 'oil', 'oil', None]
     update_health_data = []
     update_hearing_data = []
     update_speed_data = []
     update_light_data = []
+    update_inventory_data = None
 
     @staticmethod
     def initialize():
@@ -22,6 +24,11 @@ class ValueManager:
             ValueManager.hearing = int(data['hearing'])
             ValueManager.speed = int(data['speed'])
             ValueManager.light = int(data['light'])
+
+    @staticmethod
+    def set_inventory_size(size, for_time=-1):
+        ValueManager.inventory_size = size
+        ValueManager.update_inventory_data = (size, for_time, pygame.time.get_ticks())
 
     @staticmethod
     def update_health(add, for_time=-1):
@@ -107,6 +114,10 @@ class ValueManager:
             if pygame.time.get_ticks() - el[2] > el[1]:
                 ValueManager.light += (-el[0])
                 ValueManager.update_light_data.remove(el)
+        if ValueManager.update_inventory_data is not None:
+            if pygame.time.get_ticks() - ValueManager.update_inventory_data[2] > ValueManager.update_inventory_data[1]:
+                ValueManager.update_inventory_data = None
+                ValueManager.inventory_size = 5
         ValueManager.health = min(ValueManager.health, 100)
         ValueManager.hearing = min(ValueManager.hearing, 12)
         ValueManager.speed = min(ValueManager.speed, 5)

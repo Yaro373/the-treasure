@@ -103,6 +103,14 @@ class Character(Creature):
 
     def update(self, event):
         super().update(event)
+
+        if len(self.items) < (size := model.value_manager.ValueManager.inventory_size):
+            self.items += [None] * (size - len(self.items))
+            view.level.LevelManager.get_current_level().reload_main_inventory()
+        if len(self.items) > (size := model.value_manager.ValueManager.inventory_size):
+            self.items = self.items[:size]
+            view.level.LevelManager.get_current_level().reload_main_inventory()
+
         self.__update_light()
         self.lighting_area = model.value_manager.ValueManager.light
         self.speed = model.value_manager.ValueManager.speed

@@ -1,3 +1,4 @@
+import view.level
 from model.util import load_image, seconds_to_milliseconds
 from model.value_manager import ValueManager
 
@@ -43,6 +44,8 @@ class Item:
             Item.speed_potion()
         elif item_name == 'oil':
             Item.oil()
+        elif item_name == 'bag':
+            Item.bag()
 
     @staticmethod
     def tea():
@@ -65,5 +68,9 @@ class Item:
     @staticmethod
     def oil():
         ValueManager.update_light(2)
+
+    @staticmethod
+    def bag():
+        ValueManager.set_inventory_size(9, seconds_to_milliseconds(150))
 
 

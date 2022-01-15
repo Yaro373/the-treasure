@@ -27,6 +27,7 @@ class BaseInventory:
 
     def basic_draw(self, y_cf):
         screen = pygame.display.get_surface()
+        print(self.count)
 
         w, h = screen.get_size()
         element_size = min((w // 4 * 3) // self.count, h // 10)  # Вычисленный/максимальный размер
