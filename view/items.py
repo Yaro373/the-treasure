@@ -1,4 +1,4 @@
-from model.util import load_image
+from model.util import load_image, seconds_to_milliseconds
 from model.value_manager import ValueManager
 
 size = 48
@@ -33,6 +33,8 @@ images = {
 class Item:
     @staticmethod
     def use(item_name):
+        if item_name is None:
+            return
         if item_name == 'tea':
             Item.tea()
         elif item_name == 'hearing_potion':
@@ -44,27 +46,24 @@ class Item:
 
     @staticmethod
     def tea():
-        ValueManager.update_speed(1, for_time=Item.seconds_to_milliseconds(60))
+        ValueManager.update_speed(1, for_time=seconds_to_milliseconds(60))
         ValueManager.update_health(5)
 
     @staticmethod
     def hot_tea():
-        ValueManager.update_speed(1, for_time=Item.seconds_to_milliseconds(60))
+        ValueManager.update_speed(1, for_time=seconds_to_milliseconds(60))
         ValueManager.update_health(5)
 
     @staticmethod
     def hearing_potion():
-        ValueManager.update_hearing(3, for_time=Item.seconds_to_milliseconds(120))
+        ValueManager.update_hearing(3, for_time=seconds_to_milliseconds(120))
 
     @staticmethod
     def speed_potion():
-        ValueManager.update_speed(3, for_time=Item.seconds_to_milliseconds(120))
+        ValueManager.update_speed(3, for_time=seconds_to_milliseconds(120))
 
     @staticmethod
     def oil():
         ValueManager.update_light(2)
 
-    @staticmethod
-    def seconds_to_milliseconds(seconds):
-        return seconds * 1000
 

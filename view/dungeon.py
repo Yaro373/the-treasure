@@ -2,7 +2,11 @@ import pygame
 import random
 from view.object_sprites import Floor1
 from view.object_sprites import Wall1, UnbreakableWall, Chest
+from view.util_sprites import Arrow, GhostBall
+import view.level
 import view.creature
+import model.tip
+import resources.strings
 from parameters import CELL_SIZE
 
 NOTHING_SIGN = 0
@@ -12,44 +16,19 @@ CHEST_SIGN = 3
 UNBREAKABLE_WALL_SIGN = 4
 FAKE_STATUE_SIGN = 5
 
-CHEST_NUM_DATA = {
-    0: 0,
-    1: 1,
-    2: 1,
-    3: 1,
-    4: 2,
-    5: 2,
-    6: 2,
-    7: 2,
-    8: 2,
-    9: 2,
-    10: 2
-}
-
-DUNGEON_SIZE_DATA = {
-    0: 0,
-    1: 4,
-    2: 6,
-    3: 8,
-    4: 10,
-    5: 10,
-    6: 10,
-    7: 15,
-    8: 15,
-    9: 15,
-    10: 19
-}
-
 
 class Dungeon:
-    def __init__(self, size):
-        self.data = DungeonGenerator().generate(size)
+    def __init__(self, data, chests_inventory=None, enemies_positions=None):
+        self.data = data
+        self.chests_inventory = chests_inventory
+        self.enemies_positions = enemies_positions
         self.walls_sprite_group = pygame.sprite.Group()
         self.floor_sprite_group = pygame.sprite.Group()
         self.character_sprite_group = pygame.sprite.Group()
         self.ghost_sprite_group = pygame.sprite.Group()
         self.chest_sprite_group = pygame.sprite.Group()
         self.item_sprite_group = pygame.sprite.Group()
+        self.weapon_sprite_group = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.sprites_matrix = [[[0] for i in range(len(self.data))] for j in range(len(self.data))]
         self.draw_dungeon()
@@ -71,10 +50,15 @@ class Dungeon:
 
                 elif self.data[row][col] == CHEST_SIGN:
                     floor1 = Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
-                           self.all_sprites)
-                    chest = Chest(row * CELL_SIZE, col * CELL_SIZE, self.chest_sprite_group,
-                           self.all_sprites)
-
+                                    self.all_sprites)
+                    if self.chests_inventory is not None and (row, col) in self.chests_inventory.keys():
+                        chest = Chest(row * CELL_SIZE, col * CELL_SIZE, False,
+                                      self.chest_sprite_group, self.all_sprites,
+                                      items=self.chests_inventory[(row, col)][1])
+                    else:
+                        chest = Chest(row * CELL_SIZE, col * CELL_SIZE, False,
+                                      self.chest_sprite_group,
+                                      self.all_sprites, items=None)
                     self.sprites_matrix[row][col] = (floor1, chest, )
 
                 else:
@@ -82,8 +66,25 @@ class Dungeon:
                            self.all_sprites)
 
                     self.sprites_matrix[row][col] = (floor1, )
+        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, self.ghost_sprite_group,
+                            self.all_sprites)
+        if self.enemies_positions is not None:
+            for pos in self.enemies_positions:
+                view.creature.Ghost(pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, self.ghost_sprite_group, self.all_sprites)
 
-        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, self.ghost_sprite_group, self.all_sprites)
+    def update(self, event):
+        level = view.level.LevelManager.get_current_level()
+        if event is not None:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+                level.character.fire(self.weapon_sprite_group, self.all_sprites)
+        for ghost in self.ghost_sprite_group:
+            ghost.fire(self.weapon_sprite_group, self.all_sprites)
+
+        if level.character.get_dung_coords() == (len(self.data) - 2, len(self.data) - 2):
+            model.tip.TipManager.create_tip(resources.strings.end_level, 1250)
+        elif (tip := model.tip.TipManager.showing()) is not None:
+            if tip.text == resources.strings.end_level:
+                model.tip.TipManager.stop_showing()
 
     def get_neighbours_coords(self, coords, radius):
         x, y = coords
@@ -133,8 +134,9 @@ class Dungeon:
 
 
 class DungeonGenerator:
-    def generate(self, level):
-        n = DUNGEON_SIZE_DATA[level]
+    @staticmethod
+    def generate(size):
+        n = size
         stek = [(1, 1)]  # список посещенных клеток
         result = [[WALL_SIGN for i in range(n * 2 + 1)] for i in
                   range(n * 2 + 1)]  # подземелье в виде матрицы
@@ -151,8 +153,8 @@ class DungeonGenerator:
                 result[i][0] = UNBREAKABLE_WALL_SIGN
                 result[i][-1] = UNBREAKABLE_WALL_SIGN
         # добавляем комнаты
-        visited, unvisited_cells_num, result = self.add_chests(result, level, visited,
-                                                               unvisited_cells_num)
+        visited, unvisited_cells_num, result = DungeonGenerator.add_chests(result, size, visited,
+                                                                           unvisited_cells_num)
         # прокладываем дороги
         while unvisited_cells_num > 0:
             # проверяем, есть ли не посещенные соседи
@@ -203,7 +205,7 @@ class DungeonGenerator:
         return result
 
     @staticmethod
-    def add_chests(result, level, visited, unvisited_cells_num):
+    def add_chests(result, size, visited, unvisited_cells_num):
         """
         Добавляет комнаты с сундуками в подземелье.
         """
@@ -212,8 +214,8 @@ class DungeonGenerator:
 
         # создаем матрицу для выбора
         choice_data = []
-        for x in range(DUNGEON_SIZE_DATA[level] - 2):
-            choice_data.append([(x, y) for y in range(DUNGEON_SIZE_DATA[level] - 2)])
+        for x in range(size - 2):
+            choice_data.append([(x, y) for y in range(size - 2)])
         print("choice_data:", choice_data)
         # удаляем ненужное
         for x, y in res_visited:

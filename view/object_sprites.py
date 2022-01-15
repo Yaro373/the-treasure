@@ -1,7 +1,9 @@
 import random
+import time
 
 from model.util import load_image
 from parameters import CELL_SIZE
+import model.tip
 import view.level
 import view.inventory
 import pygame
@@ -11,7 +13,7 @@ import view.items
 class BaseObjectSprite(pygame.sprite.Sprite):
     def __init__(self, image, image1, image2, image3, image4, image5, image6, image7, image8,
                  x, y, *group):
-        super().__init__(group)
+        super().__init__(*group)
         self.image = image8
         self.light_images = [image1, image2, image3, image4, image5, image6, image7, image8]
         self.rect = self.image.get_rect()
@@ -153,16 +155,43 @@ class Floor3(BaseObjectSprite):
 
 class Chest(BaseObjectSprite):
     closed_chest_image = load_image('64x64_chest.png')
-    opened_chest_image = load_image('64x64_opened_chest.png')
+    closed_chest_image_0 = load_image('64x64_chest.png')
+    closed_chest_image_1 = load_image('64x64_1_chest.png')
+    closed_chest_image_2 = load_image('64x64_2_chest.png')
+    closed_chest_image_3 = load_image('64x64_3_chest.png')
+    closed_chest_image_4 = load_image('64x64_4_chest.png')
+    closed_chest_image_5 = load_image('64x64_5_chest.png')
+    closed_chest_image_6 = load_image('64x64_6_chest.png')
+    closed_chest_image_7 = load_image('64x64_7_chest.png')
+    closed_chest_image_8 = load_image('64x64_8_chest.png')
 
-    def __init__(self, x, y, *group):
+    opened_chest_image = load_image('64x64_opened_chest.png')
+    opened_chest_image_0 = load_image('64x64_opened_chest.png')
+    opened_chest_image_1 = load_image('64x64_1_opened_chest.png')
+    opened_chest_image_2 = load_image('64x64_2_opened_chest.png')
+    opened_chest_image_3 = load_image('64x64_3_opened_chest.png')
+    opened_chest_image_4 = load_image('64x64_4_opened_chest.png')
+    opened_chest_image_5 = load_image('64x64_5_opened_chest.png')
+    opened_chest_image_6 = load_image('64x64_6_opened_chest.png')
+    opened_chest_image_7 = load_image('64x64_7_opened_chest.png')
+    opened_chest_image_8 = load_image('64x64_8_opened_chest.png')
+
+    def __init__(self, x, y, opened, *group, items=None):
         # TODO убрать после тестирования
-        i = Chest.opened_chest_image
-        super().__init__(Chest.closed_chest_image, i, i, i, i, i, i, i, i, x, y,  *group)
+        i = Chest.closed_chest_image
+        super().__init__(Chest.opened_chest_image,
+                         Chest.closed_chest_image_0,
+                         Chest.closed_chest_image_1,
+                         Chest.closed_chest_image_2,
+                         Chest.closed_chest_image_3,
+                         Chest.closed_chest_image_4,
+                         Chest.closed_chest_image_5,
+                         Chest.closed_chest_image_6,
+                         Chest.closed_chest_image_7, x, y, *group)
         self.showing = False
-        self.opened = False
+        self.opened = opened
         # TODO чтение из файла
-        self.items = self.generate_items()
+        self.items = self.generate_items() if items is None else items
 
     def generate_items(self):
         items = ['oil', None, None]
@@ -184,12 +213,14 @@ class Chest(BaseObjectSprite):
         level = view.level.LevelManager.get_current_level()
         if event is not None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_o:
+                self.image = Chest.opened_chest_image
                 if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
                         (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
                     self.open_chest()
         else:
             if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
                     (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
+                model.tip.TipManager.create_tip('Нажмите "o", чтобы открыть сундук', 1250)
                 self.show_inventory()
             else:
                 self.close_inventory()
@@ -197,7 +228,16 @@ class Chest(BaseObjectSprite):
     # TODO оптимизировать после добавления полной генерации
     def open_chest(self):
         if not self.opened:
-            self.image = Chest.opened_chest_image
+            self.light_images = [
+                Chest.opened_chest_image_0,
+                Chest.opened_chest_image_1,
+                Chest.opened_chest_image_2,
+                Chest.opened_chest_image_3,
+                Chest.opened_chest_image_4,
+                Chest.opened_chest_image_5,
+                Chest.opened_chest_image_6,
+                Chest.opened_chest_image_7,
+            ]
             view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.opened = True
             self.showing = True

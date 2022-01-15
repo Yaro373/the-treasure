@@ -1,46 +1,64 @@
-import os
-import csv
-
+import model.data_saver
 import pygame.time
 
 
 class ValueManager:
-    with open(os.path.join('data', 'player_data.csv'), encoding="utf8") as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
-        for row in reader:
-            health = int(row['health'])
-            hearing = int(row['hearing'])
-            speed = int(row['speed'])
-            light = int(row['light'])
+    health = None
+    hearing = None
+    speed = None
+    light = None
+
+    inventory = [None, 'oil', 'oil', 'oil', None]
     update_health_data = []
     update_hearing_data = []
     update_speed_data = []
     update_light_data = []
 
     @staticmethod
+    def initialize():
+        if model.data_saver.DataLoader.data is not None:
+            data = model.data_saver.DataLoader.data.characteristics
+            ValueManager.health = int(data['health'])
+            ValueManager.hearing = int(data['hearing'])
+            ValueManager.speed = int(data['speed'])
+            ValueManager.light = int(data['light'])
+
+    @staticmethod
     def update_health(add, for_time=-1):
         health = ValueManager.health
-        ValueManager.health = min(ValueManager.health + add, 100)
+        after = ValueManager.health + add
+        ValueManager.health = min(after, 100)
+        ValueManager.health = max(after, 0)
         ValueManager.update_health_data.append((ValueManager.health - health, for_time, pygame.time.get_ticks()))
 
     @staticmethod
     def update_hearing(add, for_time=-1):
         hearing = ValueManager.hearing
-        ValueManager.hearing = min(ValueManager.hearing + add, 100)
+        after = ValueManager.hearing + add
+        ValueManager.hearing = min(after, 100)
+        ValueManager.hearing = max(after, 0)
         ValueManager.update_hearing_data.append((ValueManager.hearing - hearing, for_time, pygame.time.get_ticks()))
 
     @staticmethod
     def update_speed(add, for_time=-1):
         speed = ValueManager.speed
-        ValueManager.speed = min(ValueManager.speed + add, 5)
+        after = ValueManager.speed + add
+        ValueManager.speed = min(after, 5)
+        ValueManager.speed = max(after, 0)
         ValueManager.update_speed_data.append((ValueManager.speed - speed, for_time, pygame.time.get_ticks()))
 
     @staticmethod
     def update_light(add, for_time=-1):
         light = ValueManager.light
-        ValueManager.light = min(ValueManager.light + add, 7)
+        after = ValueManager.light + add
+        ValueManager.light = min(after, 7)
+        ValueManager.light = max(after, 0)
         ValueManager.update_light_data.append((ValueManager.light - light, for_time, pygame.time.get_ticks()))
         print(ValueManager.light)
+
+    @staticmethod
+    def set_inventory(inventory):
+        ValueManager.inventory = inventory
 
     @staticmethod
     def get_printable_health():

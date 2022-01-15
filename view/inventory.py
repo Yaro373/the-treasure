@@ -84,6 +84,7 @@ class BaseInventory:
                 (mouse_pos[0] - view.items.size // 2,
                  mouse_pos[1] - view.items.size // 2))
 
+
     @staticmethod
     def is_coord_in_cell(cell_x, cell_y, x, y, target_x, target_y, cell_size):
         return cell_x < (target_x - x) < (cell_x + cell_size) and \
@@ -104,10 +105,10 @@ class BaseInventory:
 
 
 class Inventory(BaseInventory):
-    def __init__(self, count):
+    def __init__(self, items):
         # TODO чтение из файла
         super().__init__('main',
-                         ['oil', 'oil', 'oil', 'oil', None],
+                         items,
                          (139, 69, 19),
                          (255, 222, 173),
                          (255, 255, 173))
@@ -118,9 +119,11 @@ class Inventory(BaseInventory):
     def draw(self):
         super().basic_draw(1)
 
-    def check_use(self):
-        view.items.Item.use(Temp.temp.item_name)
-        Temp.temp = None
+    def check_use(self, event):
+        if event.key == pygame.K_u:
+            if Temp.temp is not None:
+                view.items.Item.use(Temp.temp.item_name)
+                Temp.temp = None
 
 
 class ChestInventory(BaseInventory):

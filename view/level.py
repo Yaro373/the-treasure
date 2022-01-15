@@ -1,7 +1,9 @@
-import pygame
 import view.dungeon
 import view.creature
 import view.inventory
+import view.level_data
+import model.data_saver
+import model.value_manager
 import parameters
 
 
@@ -11,19 +13,34 @@ chest_inventory = 'chest_inventory'
 
 class LevelCreator:
     @staticmethod
-    def create_level(data):
-        return Level(data['dungeon_size'])
+    def new_level(num):
+        data = view.level_data.LEVELS[num]
+        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(data.dungeon_size))
+        items = model.value_manager.ValueManager.inventory
+        x_pos = 1
+        y_pos = 1
+        return Level(dungeon, items,
+                     x_pos * parameters.CELL_SIZE, y_pos * parameters.CELL_SIZE)
+
+    @staticmethod
+    def load_level():
+        data = model.data_saver.DataLoader.data
+        dungeon = view.dungeon.Dungeon(data.level_map, chests_inventory=data.chests_data,
+                                       enemies_positions=data.enemies_positions)
+        x_pos, y_pos = data.hero_position
+        return Level(dungeon, data.inventory,
+                     x_pos * parameters.CELL_SIZE, y_pos * parameters.CELL_SIZE)
 
 
 class Level:
-    def __init__(self, dungeon_size):
-        self.dungeon_size = dungeon_size
-        self.dungeon = view.dungeon.Dungeon(self.dungeon_size)
+    def __init__(self, dungeon, hero_items, x_pos, y_pos):
+        self.dungeon_size = len(dungeon.data)
+        self.dungeon = dungeon
         self.camera = view.dungeon.Camera()
-        self.character = view.creature.Character(parameters.CELL_SIZE, parameters.CELL_SIZE,
+        self.character = view.creature.Character(x_pos, y_pos, hero_items,
                                                  self.dungeon.character_sprite_group,
                                                  self.dungeon.all_sprites)
-        self.main_inventory = view.inventory.Inventory(5)
+        self.main_inventory = view.inventory.Inventory(self.character.items)
         self.chest_inventory = None
 
     def open_chest_inventory(self, chest):
@@ -39,9 +56,18 @@ class Level:
 
 
 class LevelManager:
-    level_index = 0
-    level = LevelCreator.create_level({'dungeon_size': 5})
+    level_num = 5
+    level = LevelCreator.new_level(level_num)
 
     @staticmethod
     def get_current_level():
         return LevelManager.level
+
+    @staticmethod
+    def next_level():
+        LevelManager.level_num += 1
+        LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
+
+    @staticmethod
+    def load_level():
+        LevelManager.level = LevelCreator.load_level()

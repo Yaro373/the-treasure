@@ -11,10 +11,12 @@ def dark_image(filename, d):
     img = Image.open(filename)
     pixels = img.load()
     x, y = img.size
-
     for i in range(x):
         for j in range(y):
-            r, g, b = pixels[i, j]
+            r, g, b, a = pixels[i, j]
+            if a == 0:
+                continue
+
             sr = r // 8
             sg = g // 8
             sb = b // 8
@@ -31,4 +33,4 @@ def dark_image(filename, d):
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
 
-resize('invisibility_potion.png', 48)
+dark_image('64x64_opened_chest.png', 8)
