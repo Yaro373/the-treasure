@@ -33,4 +33,4 @@ def dark_image(filename, d):
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
 
-dark_image('64x64_opened_chest.png', 8)
+resize('dream_catcher.png', 48)

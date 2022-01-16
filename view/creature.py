@@ -222,7 +222,7 @@ class Character(Creature):
         for sprite in self.prev_light_sprites:
             sprite.set_light(7)
         self.prev_light_sprites.clear()
-        for ngh in level.dungeon.get_light_area(self, self.lighting_area):
+        for ngh in level.dungeon.get_light_area(self.lighting_area):
             for sprite in ngh[0]:
                 sprite.set_light(ngh[1])
                 self.prev_light_sprites.append(sprite)
