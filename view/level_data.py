@@ -1,8 +1,3 @@
-class LevelData0:
-    dungeon_size = 0
-    chest_count = 0
-
-
 class LevelData1:
     dungeon_size = 4
     chest_count = 1
@@ -54,7 +49,6 @@ class LevelData10:
 
 
 LEVELS = [
-    LevelData0,
     LevelData1,
     LevelData2,
     LevelData3,

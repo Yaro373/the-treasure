@@ -76,8 +76,6 @@ class Dungeon:
         if event is not None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 level.character.fire(self.weapon_sprite_group, self.all_sprites)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
-                view.level.LevelManager.next_level()
         for ghost in self.ghost_sprite_group:
             ghost.fire(self.weapon_sprite_group, self.all_sprites)
 
@@ -106,8 +104,24 @@ class Dungeon:
             result[2].append((i, y))
         return result
 
-    def get_light_area(self, character, radius):
-        x, y = character.get_dung_coords()
+    def get_radius_neighbours_coords(self, radius):
+        x, y = view.level.LevelManager.get_current_level().character.get_dung_coords()
+        wave = {(x, y)}
+        for i in range(radius):
+            next_wave = set()
+            for el in wave:
+                neighbours = self.get_neighbours_coords(el, 1)
+                for k, v in neighbours.items():
+                    for sel in v:
+                        if sel not in wave:
+                            next_wave.add(sel)
+                    next_wave.update(set(v))
+            wave.update(next_wave)
+            next_wave.clear()
+        return wave
+
+    def get_light_area(self, radius):
+        x, y = view.level.LevelManager.get_current_level().character.get_dung_coords()
         wave = {(x, y)}
         result = {((x, y), 7 - radius)}
         for i in range(radius):

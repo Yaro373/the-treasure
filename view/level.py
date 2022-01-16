@@ -60,7 +60,7 @@ class Level:
 
 
 class LevelManager:
-    level_num = 1
+    level_num = 0
     level = LevelCreator.new_level(level_num)
 
     @staticmethod

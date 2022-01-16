@@ -1,4 +1,5 @@
 import model.data_saver
+import view.level
 import pygame.time
 
 
@@ -15,6 +16,7 @@ class ValueManager:
     update_speed_data = []
     update_light_data = []
     update_inventory_data = None
+    visibility_data = None
 
     @staticmethod
     def initialize():
@@ -24,6 +26,11 @@ class ValueManager:
             ValueManager.hearing = int(data['hearing'])
             ValueManager.speed = int(data['speed'])
             ValueManager.light = int(data['light'])
+
+    @staticmethod
+    def set_invisibility(for_time):
+        view.level.LevelManager.get_current_level().character.set_visibility(False)
+        ValueManager.visibility_data = (for_time, pygame.time.get_ticks())
 
     @staticmethod
     def set_inventory_size(size, for_time=-1):
@@ -88,6 +95,10 @@ class ValueManager:
         }
 
     @staticmethod
+    def is_visibility():
+        return ValueManager.visibility_data is None
+
+    @staticmethod
     def update():
         for el in ValueManager.update_health_data:
             if el[1] == -1:
@@ -117,6 +128,11 @@ class ValueManager:
             if pygame.time.get_ticks() - ValueManager.update_inventory_data[2] > ValueManager.update_inventory_data[1]:
                 ValueManager.update_inventory_data = None
                 ValueManager.inventory_size = 5
+        if ValueManager.visibility_data is not None:
+            if pygame.time.get_ticks() - ValueManager.visibility_data[1] > \
+                    ValueManager.visibility_data[0]:
+                view.level.LevelManager.get_current_level().character.set_visibility(True)
+                ValueManager.visibility_data = None
         ValueManager.health = min(ValueManager.health, 100)
         ValueManager.hearing = min(ValueManager.hearing, 12)
         ValueManager.speed = min(ValueManager.speed, 5)

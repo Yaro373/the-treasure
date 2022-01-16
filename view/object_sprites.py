@@ -177,7 +177,6 @@ class Chest(BaseObjectSprite):
     opened_chest_image_8 = load_image('64x64_8_opened_chest.png')
 
     def __init__(self, x, y, opened, *group, items=None):
-        # TODO убрать после тестирования
         i = Chest.closed_chest_image
         super().__init__(Chest.opened_chest_image,
                          Chest.closed_chest_image_0,
@@ -251,12 +250,3 @@ class Chest(BaseObjectSprite):
         if self.showing:
             view.level.LevelManager.get_current_level().close_chest_inventory()
             self.showing = False
-
-
-# TODO
-# Ловушка
-class Trap(BaseObjectSprite):
-    closed_chest_image = None
-
-    def __init__(self, x, y, *group):
-        super().__init__(Chest.opened_chest_image, x, y, *group)

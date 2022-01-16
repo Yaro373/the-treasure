@@ -37,6 +37,10 @@ class ThirdGhostCharacteristics:
     harm = 25
 
 
+class PathIncorrectLoopException(Exception):
+    pass
+
+
 class Creature(pygame.sprite.Sprite):
     def __init__(self, image, x, y, characteristics, *group):
         super().__init__(*group)
@@ -81,6 +85,8 @@ class Creature(pygame.sprite.Sprite):
 
 class Character(Creature):
     image = load_image('32x32_character.png')
+    invisibility_image = image.copy()
+    invisibility_image.set_alpha(50)
 
     def __init__(self, x, y, items, *group):
         super().__init__(Character.image, x, y, CharacterCharacteristics(), *group)
@@ -93,6 +99,7 @@ class Character(Creature):
         self.path = [self.get_dung_coords()]
         self.prev_light_sprites = []
         self.items = items
+        self.logging = False
         # TODO загрузка из файла
         self.remain = seconds_to_milliseconds(60)
         self.start = pygame.time.get_ticks()
@@ -100,6 +107,12 @@ class Character(Creature):
     def fire(self, *group):
         x, y = self.rect.x, self.rect.y
         Arrow(x, y, self.direction, *group)
+
+    def set_visibility(self, visibility):
+        if visibility:
+            self.image = Character.image
+        else:
+            self.image = Character.invisibility_image
 
     def update(self, event):
         super().update(event)
@@ -168,22 +181,43 @@ class Character(Creature):
             self.rect.x += self.speed
             self.f_x += self.speed
 
-        coord = self.get_dung_coords()
-        d_coord = self.get_d_dung_coords()
-        if coord != self.prev_coord and self.path[-1] != coord:
-            self.path.append(coord)
-        elif d_coord != self.prev_d_coord and self.path[-1] != d_coord:
-            self.path.append(d_coord)
-        self.prev_coord = coord
-        self.prev_d_coord = d_coord
+        if self.logging:
+            coord = self.get_dung_coords()
+            d_coord = self.get_d_dung_coords()
+            if len(self.path) == 0 or (coord != self.prev_coord and self.path[-1] != coord):
+                self.path.append(coord)
+            elif len(self.path) == 0 or (d_coord != self.prev_d_coord and self.path[-1] != d_coord):
+                self.path.append(d_coord)
+            self.prev_coord = coord
+            self.prev_d_coord = d_coord
 
         self.__make_light(level)
+
+    def start_log(self):
+        self.path.clear()
+        self.path = [self.get_dung_coords()]
+        self.logging = True
+
+    def end_log(self):
+        self.logging = False
 
     def get_path(self):
         return self.path
 
     def correct_health(self, health):
         model.value_manager.ValueManager.update_health(health)
+
+    def remove_path_loops(self):
+        i = 0
+        while i < len(self.path):
+            el = self.path[i]
+            if self.path.count(el) > 1:
+                if self.path.count(el) % 2 == 1:
+                    self.path = [self.path[-1]]
+                    raise PathIncorrectLoopException
+                self.path.pop(i)
+                self.path = self.path[:i] + self.path[self.path.index(el):]
+            i += 1
 
     def __update_light(self):
         current_time = pygame.time.get_ticks()
@@ -196,7 +230,7 @@ class Character(Creature):
         for sprite in self.prev_light_sprites:
             sprite.set_light(7)
         self.prev_light_sprites.clear()
-        for ngh in level.dungeon.get_light_area(self, self.lighting_area):
+        for ngh in level.dungeon.get_light_area(self.lighting_area):
             for sprite in ngh[0]:
                 sprite.set_light(ngh[1])
                 self.prev_light_sprites.append(sprite)
@@ -232,29 +266,42 @@ class Ghost(Creature):
         elif direction == 4:
             self.rect.x -= (self.speed + cnt_speed)
 
-        dev = 8 if self.direction in (2, 3) else -8
+        # TODO dev
+        dev = 0
         if self.attacking:
-            self.clear_cnt_speed(direction, cnt_speed)
+            if not self.can_attack():
+                self.end_attack()
+            self.__clear_cnt_speed(direction, cnt_speed)
             if (time.time() - self.start_attack_moment) >= self.attack_time:
                 self.end_attack()
+                character.end_log()
             elif self.get_dung_coords(dev) == self.get_d_dung_coords(dev) \
-                    and self.get_dung_coords(dev) == character.get_path()[self.main_hero_pos_index]:
-                path = character.get_path()
+                    and self.get_dung_coords(dev) == character.get_path()[0]:
                 dung_coords = self.get_dung_coords(dev)
-                self.main_hero_pos_index = min(self.main_hero_pos_index + 1, len(path) - 1)
-                if path[self.main_hero_pos_index][1] < dung_coords[1]:
-                    self.direction = 1
-                elif path[self.main_hero_pos_index][0] > dung_coords[0]:
-                    self.direction = 2
-                elif path[self.main_hero_pos_index][1] > dung_coords[1]:
-                    self.direction = 3
-                elif path[self.main_hero_pos_index][0] < dung_coords[0]:
-                    self.direction = 4
-                else:
-                    self.direction = 0
+                d_dung_coords = self.get_d_dung_coords(dev)
+
+                if len(character.path) > 1:
+                    character.path.pop(0)
+                try:
+                    character.remove_path_loops()
+                    path = character.get_path()
+                    if path[0] == dung_coords or path[0] == d_dung_coords:
+                        self.direction = 0
+                    elif path[0][1] < dung_coords[1]:
+                        self.direction = 1
+                    elif path[0][0] > dung_coords[0]:
+                        self.direction = 2
+                    elif path[0][1] > dung_coords[1]:
+                        self.direction = 3
+                    elif path[0][0] < dung_coords[0]:
+                        self.direction = 4
+                except PathIncorrectLoopException:
+                    self.end_attack()
+
             if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
                 self.rect.x = prev_pos[0]
                 self.rect.y = prev_pos[1]
+                self.end_attack()
         elif pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x = prev_pos[0]
             self.rect.y = prev_pos[1]
@@ -265,7 +312,7 @@ class Ghost(Creature):
                     self.direction = random.choice((1, 3))
         elif self.get_dung_coords(dev) == self.get_d_dung_coords(dev) != self.prev_point:
             self.prev_point = self.get_dung_coords(dev)
-            self.clear_cnt_speed(direction, cnt_speed)
+            self.__clear_cnt_speed(direction, cnt_speed)
             for k, v in level.dungeon.get_neighbours_coords(self.get_dung_coords(8), 1).items():
                 if direction in (1, 3):
                     if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
@@ -276,22 +323,18 @@ class Ghost(Creature):
                         if random.random() <= 0.5:
                             self.direction = k
         else:
-            self.clear_cnt_speed(direction, cnt_speed)
+            self.__clear_cnt_speed(direction, cnt_speed)
         self.f_x += (self.rect.x - prev_pos[0])
         self.f_y += (self.rect.y - prev_pos[1])
         if not self.attacking:
             neighbours = level.dungeon.get_neighbours_coords(self.get_dung_coords(), self.see_radius)
             main_hero_coords = level.character.get_dung_coords()
-            for coords in neighbours[direction]:
+            for coords in neighbours[direction] + neighbours[0]:
                 if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
                     break
-                if main_hero_coords == coords:
+                if main_hero_coords == coords and self.can_attack():
                     self.start_attack()
-            for coords in neighbours[0]:
-                if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
-                    break
-                if main_hero_coords == coords:
-                    self.start_attack()
+                    character.start_log()
 
     def fire(self, *group):
         level = view.level.LevelManager.get_current_level()
@@ -305,6 +348,9 @@ class Ghost(Creature):
                           self.rect.y, self.direction, *group)
             self.set_fire_moment()
 
+    def can_attack(self):
+        return model.value_manager.ValueManager.is_visibility()
+
     def start_attack(self):
         self.attacking = True
         self.start_attack_moment = time.time()
@@ -316,7 +362,7 @@ class Ghost(Creature):
         self.attacking = False
         self.speed //= 2
 
-    def clear_cnt_speed(self, direction, cnt_speed):
+    def __clear_cnt_speed(self, direction, cnt_speed):
         if direction == 1:
             self.rect.y += cnt_speed
         elif direction == 2:
@@ -325,6 +371,3 @@ class Ghost(Creature):
             self.rect.y -= cnt_speed
         elif direction == 4:
             self.rect.x += cnt_speed
-
-
-

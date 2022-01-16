@@ -1,3 +1,4 @@
+import model.value_manager
 import view.level
 from model.util import load_image, seconds_to_milliseconds
 from model.value_manager import ValueManager
@@ -20,6 +21,7 @@ RANDOM_ITEMS_LIST = {
 images = {
     'tea': load_image('48x48_tea.png'),
     'hot_tea': load_image('48x48_hot_tea.png'),
+    'dream_catcher': load_image('48x48_dream_catcher.png'),
     'oil': load_image('48x48_oil.png'),
     'bag': load_image('48x48_bag.png'),
     'old_clock': load_image('48x48_old_clock.png'),
@@ -46,6 +48,10 @@ class Item:
             Item.oil()
         elif item_name == 'bag':
             Item.bag()
+        elif item_name == 'dream_catcher':
+            Item.dream_catcher()
+        elif item_name == 'invisibility_potion':
+            Item.invisibility_potion()
 
     @staticmethod
     def tea():
@@ -73,4 +79,15 @@ class Item:
     def bag():
         ValueManager.set_inventory_size(9, seconds_to_milliseconds(150))
 
+    @staticmethod
+    def dream_catcher():
+        level = view.level.LevelManager.get_current_level()
+        ngh = level.dungeon.get_radius_neighbours_coords(7)
+        for ghost in level.dungeon.ghost_sprite_group:
+            if ghost.get_dung_coords() in ngh or ghost.get_d_dung_coords() in ngh:
+                ghost.kill()
+
+    @staticmethod
+    def invisibility_potion():
+        model.value_manager.ValueManager.set_invisibility(seconds_to_milliseconds(10))
 
