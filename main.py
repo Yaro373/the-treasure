@@ -4,6 +4,7 @@ import view.level
 import model.value_manager
 import model.data_saver
 import model.tip
+import view.intro
 from parameters import GAME_TITLE
 
 
@@ -49,6 +50,12 @@ if __name__ == '__main__':
                 if level.chest_inventory is not None:
                     level.chest_inventory.check_click()
                 level.main_inventory.check_click()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
+                result = view.intro.show_intro(f'Уровень {view.level.LevelManager.level_num + 1}')
+                if result == 0:
+                    model.data_saver.DataSaver.save()
+                    loop = False
+                view.level.LevelManager.next_level()
             level.dungeon.update(event)
         if not events:
             level.dungeon.update(None)

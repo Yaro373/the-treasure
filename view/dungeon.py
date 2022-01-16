@@ -76,8 +76,6 @@ class Dungeon:
         if event is not None:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 level.character.fire(self.weapon_sprite_group, self.all_sprites)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
-                view.level.LevelManager.next_level()
         for ghost in self.ghost_sprite_group:
             ghost.fire(self.weapon_sprite_group, self.all_sprites)
 
