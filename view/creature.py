@@ -85,6 +85,8 @@ class Creature(pygame.sprite.Sprite):
 
 class Character(Creature):
     image = load_image('32x32_character.png')
+    invisibility_image = image.copy()
+    invisibility_image.set_alpha(50)
 
     def __init__(self, x, y, items, *group):
         super().__init__(Character.image, x, y, CharacterCharacteristics(), *group)
@@ -105,6 +107,12 @@ class Character(Creature):
     def fire(self, *group):
         x, y = self.rect.x, self.rect.y
         Arrow(x, y, self.direction, *group)
+
+    def set_visibility(self, visibility):
+        if visibility:
+            self.image = Character.image
+        else:
+            self.image = Character.invisibility_image
 
     def update(self, event):
         super().update(event)
@@ -261,6 +269,8 @@ class Ghost(Creature):
         # TODO dev
         dev = 0
         if self.attacking:
+            if not self.can_attack():
+                self.end_attack()
             self.__clear_cnt_speed(direction, cnt_speed)
             if (time.time() - self.start_attack_moment) >= self.attack_time:
                 self.end_attack()
@@ -322,7 +332,7 @@ class Ghost(Creature):
             for coords in neighbours[direction] + neighbours[0]:
                 if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
                     break
-                if main_hero_coords == coords:
+                if main_hero_coords == coords and self.can_attack():
                     self.start_attack()
                     character.start_log()
 
@@ -337,6 +347,9 @@ class Ghost(Creature):
                 GhostBall(self.rect.x,
                           self.rect.y, self.direction, *group)
             self.set_fire_moment()
+
+    def can_attack(self):
+        return model.value_manager.ValueManager.is_visibility()
 
     def start_attack(self):
         self.attacking = True

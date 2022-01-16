@@ -1,3 +1,4 @@
+import model.value_manager
 import view.level
 from model.util import load_image, seconds_to_milliseconds
 from model.value_manager import ValueManager
@@ -49,6 +50,8 @@ class Item:
             Item.bag()
         elif item_name == 'dream_catcher':
             Item.dream_catcher()
+        elif item_name == 'invisibility_potion':
+            Item.invisibility_potion()
 
     @staticmethod
     def tea():
@@ -84,5 +87,7 @@ class Item:
             if ghost.get_dung_coords() in ngh or ghost.get_d_dung_coords() in ngh:
                 ghost.kill()
 
-
+    @staticmethod
+    def invisibility_potion():
+        model.value_manager.ValueManager.set_invisibility(seconds_to_milliseconds(10))
 
