@@ -1,10 +1,12 @@
 from PIL import Image
 
 
-def resize(filename, size):
+def resize(filename, size, res_name=None):
+    if res_name is None:
+        res_name = filename
     img = Image.open(filename)
     img = img.resize((size, size))
-    img.save(f"{size}x{size}_" + filename)
+    img.save(f"{size}x{size}_" + res_name)
 
 
 def merge(*filenames, size=128, outfilename="out.png"):
@@ -42,21 +44,9 @@ def dark_image(filename, d):
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
-
-resize("Attack_Animation_2-1.png", 128)
-resize("Attack_Animation_2-2.png", 128)
-resize("Attack_Animation_2-3.png", 128)
-resize("Attack_Animation_2-6.png", 128)
-resize("Attack_Animation_2-5.png", 128)
-resize("Attack_Animation_2-4.png", 128)
-resize("Attack_Animation_2-7.png", 128)
-resize("Attack_Animation_2-8.png", 128)
-
-merge("128x128_Attack_Animation_2-1.png",
-      "128x128_Attack_Animation_2-2.png",
-      "128x128_Attack_Animation_2-3.png",
-      "128x128_Attack_Animation_2-4.png",
-      "128x128_Attack_Animation_2-5.png",
-      "128x128_Attack_Animation_2-6.png",
-      "128x128_Attack_Animation_2-7.png",
-      "128x128_Attack_Animation_2-8.png", outfilename="128_128_attack_animation.png")
+resize("Fire high.png", 64, "fire_high.png")
+resize("Fire low new.png", 64, "fire_low.png")
+resize("Fire mid new.png", 64, "fire_mid.png")
+resize("Heart.png", 64, "heart_high.png")
+resize("lowhpheart.png", 64, "heart_low.png")
+resize("mid health.png", 64, "heart_mid.png")

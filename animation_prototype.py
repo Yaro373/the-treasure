@@ -62,11 +62,26 @@ class MainCharacter:
         # где должно находиться тело на каждый шаг анимации
         self.x = x
         self.y = y
-        self.character_group = pygame.sprite.Group()
+        self.prev_sheet = 0
+        # возможно это кастыль, но пихаем каждый анимирорванныфй спрайт в свою группу,
+        # чтобы контролировать их отрисовку по отдельности
+        self.legs_group = pygame.sprite.Group()
+        self.sword_attack_group = pygame.sprite.Group()
+        self.sword_run_group = pygame.sprite.Group()
+        self.bow_group = pygame.sprite.Group()
+        self.lamp_group = pygame.sprite.Group()
+        self.nothing_group = pygame.sprite.Group()
         self.legs = AnimatedSprite(load_image("128_128_legs_animation.png"), 10, 1, 128, 128,
-                                   self.character_group)
-        self.body = AnimatedSprite(load_image("128_128_attack_animation.png"), 8, 1, 128, 128,
-                                   self.character_group)
+                                   self.legs_group)
+        self.body_sword_attack = AnimatedSprite(load_image("128_128_attack_animation.png"), 8, 1, 128, 128,
+                                   self.sword_attack_group)
+        self.body = AnimatedSprite(load_image("128_128_body_animation.png"), 10, 1, 128, 128,
+                                   self.nothing_group)
+        self.body_sword_run = AnimatedSprite(load_image("128_128_sword_run_animation.png"), 5, 1, 128, 128,
+                                   self.sword_run_group)
+        self.body_lamp_run = AnimatedSprite(load_image("128_128_oil_lamp_body_animation.png"), 5, 1, 128, 128,
+                                   self.lamp_group)
+        self.mode = 0 # 0 - nothing, 1 - sword, 2 - sword_run, 3 - lamp, 4 - bow run, 5 - bow shoot
         self.move(self.x, self.y)
         self.update()
 
@@ -78,16 +93,49 @@ class MainCharacter:
         self.body.rect.x = self.x
         self.body.rect.y = self.y - self.body_cords[self.legs.cur_frame]
 
+    def attack(self):
+        self.mode = 1
+        self.update()
+        # todo сделать так, чтобы персонаж атаковал 1 раз,
+        # todo а затем возвращался в предыдущее состояние
+
+    def set_mode(self, mode):
+        self.mode = mode
+        self.update()
+
     def draw(self, surface):
-        self.character_group.draw(surface)
+        self.legs_group.draw(surface)
+        if self.mode == 0:
+            self.nothing_group.draw(surface)
+        if self.mode == 1:
+            self.sword_attack_group.draw(surface)
+        if self.mode == 2:
+            self.sword_run_group.draw(surface)
+        if self.mode == 3:
+            self.lamp_group.draw(surface)
 
     def update(self):
+        cur_sprite = None
+        self.legs.update()  # обновляем ноги
+        if self.mode == 0:
+            cur_sprite = self.body
+            cur_sprite.cur_frame = self.legs.cur_frame
+        elif self.mode == 1:
+            cur_sprite = self.body_sword_attack
+        elif self.mode == 2:
+            cur_sprite = self.body_sword_run
+            cur_sprite.cur_frame = self.legs.cur_frame % 5
+        elif self.mode == 3:
+            cur_sprite = self.body_lamp_run
+            cur_sprite.cur_frame = self.legs.cur_frame % 5
         # сдесь регулируется анимация персонажа
-        print(self.legs.cur_frame)
         y = self.y - self.body_cords[self.legs.cur_frame]
+        x = self.x
 
-        self.body.rect.y = y
-        self.character_group.update()
+        cur_sprite.rect.y = y
+        cur_sprite.rect.x = x
+        self.legs.update()
+        cur_sprite.update()
 
 
 if __name__ == '__main__':
@@ -102,6 +150,19 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 loop = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    character.set_mode(0)
+                if event.key == pygame.K_2:
+                    character.set_mode(1)
+                if event.key == pygame.K_3:
+                    character.set_mode(2)
+                if event.key == pygame.K_4:
+                    character.set_mode(3)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    character.attack()
+
         screen.fill((0, 0, 0))
         character.draw(screen)
         character.update()
