@@ -9,36 +9,24 @@ import view.dungeon
 import time
 
 
-class CharacterCharacteristics:
-    health = 100
-    speed = 2
-    fire_interval = seconds_to_milliseconds(5)
-    harm = 10
-
-
-class FirstGhostCharacteristics:
-    health = 20
-    speed = 2
-    fire_interval = seconds_to_milliseconds(5)
-    harm = 10
-
-
-class SecondGhostCharacteristics:
-    health = 60
-    speed = 4
-    fire_interval = seconds_to_milliseconds(3)
-    harm = 15
-
-
-class ThirdGhostCharacteristics:
-    health = 100
-    speed = 6
-    fire_interval = seconds_to_milliseconds(1)
-    harm = 25
-
-
 class PathIncorrectLoopException(Exception):
     pass
+
+
+class BaseCharacteristics:
+    def __init__(self, health, speed, fire_interval, harm):
+        self.health = health
+        self.speed = speed
+        self.fire_interval = fire_interval
+        self.harm = harm
+
+
+class GhostCharacteristics:
+    def __init__(self, base_characteristics, see_radius, attack_time):
+        self.base_characteristics = base_characteristics
+        self.see_radius = see_radius
+        self.attack_time = attack_time
+        self.fire_speed = base_characteristics.speed + 10
 
 
 class Creature(pygame.sprite.Sprite):
@@ -88,8 +76,10 @@ class Character(Creature):
     invisibility_image = image.copy()
     invisibility_image.set_alpha(50)
 
+    characteristics = BaseCharacteristics(100, 2, 3000, 15)
+
     def __init__(self, x, y, items, *group):
-        super().__init__(Character.image, x, y, CharacterCharacteristics(), *group)
+        super().__init__(Character.image, x, y, Character.characteristics, *group)
         self.speed = 4
         self.lighting_area = 1
         self.direction = 1
@@ -105,8 +95,10 @@ class Character(Creature):
         self.start = pygame.time.get_ticks()
 
     def fire(self, *group):
-        x, y = self.rect.x, self.rect.y
-        Arrow(x, y, self.direction, *group)
+        if self.can_fire():
+            self.set_fire_moment()
+            x, y = self.rect.x, self.rect.y
+            Arrow(x, y, self.direction, *group)
 
     def set_visibility(self, visibility):
         if visibility:
@@ -239,12 +231,16 @@ class Character(Creature):
 class Ghost(Creature):
     image = load_image('32x32_ghost.png')
 
-    def __init__(self, x, y, *group):
-        super().__init__(Ghost.image, x, y, FirstGhostCharacteristics(), *group)
-        self.speed = 1
-        self.see_radius = 5
+    def __init__(self, x, y, level, *group):
+        data = GhostDataManager.get_data_by_level(level)
+
+        super().__init__(Ghost.image, x, y, data.characteristics.base_characteristics, *group)
+        self.see_radius = data.characteristics.see_radius
+        self.attack_time = data.characteristics.attack_time
+        self.fire_speed = data.characteristics.fire_speed
+        self.image = data.image
+
         self.attacking = False
-        self.attack_time = 25
         self.start_attack_moment = -1
         self.direction = random.choice([1, 2, 3, 4])
         self.main_hero_pos_index = -1
@@ -342,10 +338,10 @@ class Ghost(Creature):
             x, y = self.get_dung_coords()
             cx, cy = level.character.get_dung_coords()
             if self.direction in (2, 4) and abs(x - cx) <= 5 and y == cy:
-                GhostBall(self.rect.x, self.rect.y, self.direction, *group)
+                GhostBall(self.rect.x, self.rect.y, self.direction, self.fire_speed, self.harm, *group)
             if self.direction in (1, 3) and abs(y - cy) <= 5 and x == cx:
                 GhostBall(self.rect.x,
-                          self.rect.y, self.direction, *group)
+                          self.rect.y, self.direction, self.fire_speed, self.harm, *group)
             self.set_fire_moment()
 
     def can_attack(self):
@@ -371,3 +367,41 @@ class Ghost(Creature):
             self.rect.y -= cnt_speed
         elif direction == 4:
             self.rect.x += cnt_speed
+
+
+class GhostData:
+    def __init__(self, characteristics, image):
+        self.characteristics = characteristics
+        self.image = image
+
+
+class GhostDataManager:
+    @staticmethod
+    def get_data_by_level(level):
+        characteristics = GhostCharacteristicsManager.get_characteristics_by_level(level)
+        data = GhostImageManager.get_image_by_level(level)
+        return GhostData(characteristics, data)
+
+
+class GhostCharacteristicsManager:
+    __data = {
+        1: GhostCharacteristics(BaseCharacteristics(30, 1, 5000, 10), 5, 15),
+        2: GhostCharacteristics(BaseCharacteristics(60, 2, 3000, 20), 7, 30),
+        3: GhostCharacteristics(BaseCharacteristics(100, 3, 1000, 35), 9, 45),
+    }
+
+    @staticmethod
+    def get_characteristics_by_level(level):
+        return GhostCharacteristicsManager.__data[level]
+
+
+class GhostImageManager:
+    __data = {
+        1: load_image('32x32_ghost.png'),
+        2: load_image('32x32_ghost.png'),
+        3: load_image('32x32_ghost.png'),
+    }
+
+    @staticmethod
+    def get_image_by_level(level):
+        return GhostImageManager.__data[level]

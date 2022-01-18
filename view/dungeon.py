@@ -67,7 +67,7 @@ class Dungeon:
                            self.all_sprites)
 
                     self.sprites_matrix[row][col] = (floor1, )
-        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, self.ghost_sprite_group,
+        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, 3, self.ghost_sprite_group,
                             self.all_sprites)
         if self.enemies_positions is not None:
             for pos in self.enemies_positions:

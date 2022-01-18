@@ -50,11 +50,12 @@ class Arrow(pygame.sprite.Sprite):
 
 
 class GhostBall(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction, *group):
+    def __init__(self, x, y, direction, speed, harm, *group):
         super().__init__(*group)
         self.direction = direction
-        self.speed = 5
+        self.speed = speed
         self.level = view.level.LevelManager.get_current_level()
+        self.harm = harm
 
         self.image = load_image('32x32_ball.png')
         self.rect = self.image.get_rect()
@@ -80,4 +81,4 @@ class GhostBall(pygame.sprite.Sprite):
             self.kill()
         if character := pygame.sprite.spritecollideany(self, self.level.dungeon.character_sprite_group):
             self.kill()
-            character.correct_health(-20)
+            character.correct_health(-self.harm)
