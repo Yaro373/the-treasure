@@ -37,12 +37,16 @@ images = {
 class Item:
     __printable_names = {
         'tea': resources.strings.tea,
+        'hot_tea': resources.strings.hot_tea,
+        'old_clock': resources.strings.old_clock,
+        'music_box': resources.strings.music_box,
+        'snow_ball': resources.strings.snow_ball,
         'hearing_potion': resources.strings.hearing_potion,
         'speed_potion': resources.strings.speed_potion,
         'oil': resources.strings.oil,
         'bag': resources.strings.bag,
         'dream_catcher': resources.strings.dream_catcher,
-        'invisibility_potion': resources.strings.invisibility_potion
+        'invisibility_potion': resources.strings.invisibility_potion,
     }
 
     @staticmethod
