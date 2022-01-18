@@ -161,7 +161,7 @@ class ChestInventory(BaseInventory):
 
     def draw(self):
         super().basic_draw(0.5)
-        self.chest.items = self.items.copy()
+        self.chest.items = self.items
 
     def update(self, event):
         super().update(event)
@@ -170,3 +170,8 @@ class ChestInventory(BaseInventory):
                 if Temp.temp.start_from == 'chest':
                     self.items[Temp.temp.start_cell_index] = None
                     Temp.temp = None
+
+    def check_temp(self):
+        if Temp.temp is not None and Temp.temp.start_from == self.short_name:
+            self.items[Temp.temp.start_cell_index] = Temp.temp.item_name
+            Temp.temp = None

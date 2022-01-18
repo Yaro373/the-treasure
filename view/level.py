@@ -48,6 +48,7 @@ class Level:
         self.chest_inventory = view.inventory.ChestInventory(chest)
 
     def close_chest_inventory(self):
+        self.chest_inventory.check_temp()
         self.chest_inventory = None
 
     def draw_inventories(self):
