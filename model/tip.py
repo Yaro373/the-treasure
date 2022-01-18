@@ -1,21 +1,31 @@
 import pygame
+import view.level
 
 
 class TipManager:
     tip = None
     start = -1
     duration = -1
+    while_coord = None
 
     @staticmethod
-    def create_tip(text, duration):
+    def create_tip(text, duration=-1, while_coord=None):
         TipManager.tip = Tip(text)
         TipManager.duration = duration
         TipManager.start = pygame.time.get_ticks()
+        TipManager.while_coord = while_coord
 
     @staticmethod
     def show():
         if TipManager.tip is not None:
-            if pygame.time.get_ticks() - TipManager.start < TipManager.duration:
+            if TipManager.while_coord is not None:
+                character = view.level.LevelManager.get_current_level().character
+                if character.get_dung_coords() == TipManager.while_coord or character.get_d_dung_coords() == TipManager.while_coord:
+                    TipManager.tip.show()
+                else:
+                    TipManager.stop_showing()
+            elif TipManager.duration == -1 or \
+                    pygame.time.get_ticks() - TipManager.start < TipManager.duration:
                 TipManager.tip.show()
             else:
                 TipManager.stop_showing()

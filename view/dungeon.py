@@ -81,11 +81,12 @@ class Dungeon:
         for ghost in self.ghost_sprite_group:
             ghost.fire(self.weapon_sprite_group, self.all_sprites)
 
-        if level.character.get_dung_coords() == (len(self.data) - 2, len(self.data) - 2):
-            model.tip.TipManager.create_tip(resources.strings.end_level, 1250)
-        elif (tip := model.tip.TipManager.showing()) is not None:
-            if tip.text == resources.strings.end_level:
-                model.tip.TipManager.stop_showing()
+        dc = level.character.get_dung_coords()
+        ddc = level.character.get_d_dung_coords()
+        end_coords = (len(self.data) - 2, len(self.data) - 2)
+        if dc == end_coords or ddc == end_coords:
+            model.tip.TipManager.create_tip(resources.strings.end_level,
+                                            while_coord=(len(self.data) - 2, len(self.data) - 2))
 
     def get_neighbours_coords(self, coords, radius):
         x, y = coords

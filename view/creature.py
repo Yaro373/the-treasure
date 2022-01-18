@@ -76,7 +76,7 @@ class Character(Creature):
     invisibility_image = image.copy()
     invisibility_image.set_alpha(50)
 
-    characteristics = BaseCharacteristics(100, 2, 3000, 15)
+    characteristics = BaseCharacteristics(100, 2, 250, 15)
 
     def __init__(self, x, y, items, *group):
         super().__init__(Character.image, x, y, Character.characteristics, *group)
