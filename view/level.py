@@ -59,6 +59,12 @@ class Level:
         print(self.character.items)
         self.main_inventory = view.inventory.Inventory(self.character.items)
 
+    def update_inventories(self, event):
+        if self.main_inventory is not None:
+            self.main_inventory.update(event)
+        if self.chest_inventory is not None:
+            self.chest_inventory.update(event)
+
 
 class LevelManager:
     level_num = 0

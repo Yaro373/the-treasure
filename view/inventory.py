@@ -115,8 +115,9 @@ class BaseInventory:
                      element_size // 2 - image_part_size))
 
     @staticmethod
-    def check_click():
-        Temp.click_coord = pygame.mouse.get_pos()
+    def update(event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            Temp.click_coord = pygame.mouse.get_pos()
 
 
 class Inventory(BaseInventory):
@@ -140,6 +141,14 @@ class Inventory(BaseInventory):
                 view.items.Item.use(Temp.temp.item_name)
                 Temp.temp = None
 
+    def update(self, event):
+        super().update(event)
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+            if Temp.temp is not None:
+                if Temp.temp.start_from == 'main':
+                    self.items[Temp.temp.start_cell_index] = None
+                    Temp.temp = None
+
 
 class ChestInventory(BaseInventory):
     def __init__(self, chest):
@@ -153,3 +162,11 @@ class ChestInventory(BaseInventory):
     def draw(self):
         super().basic_draw(0.5)
         self.chest.items = self.items.copy()
+
+    def update(self, event):
+        super().update(event)
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+            if Temp.temp is not None:
+                if Temp.temp.start_from == 'chest':
+                    self.items[Temp.temp.start_cell_index] = None
+                    Temp.temp = None
