@@ -44,6 +44,24 @@ def dark_image(filename, d):
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
+resize("Floor2.png", 64, "floor_2.png")
+
+dark_image("64x64_floor_2.png", 1)
+dark_image("64x64_floor_2.png", 2)
+dark_image("64x64_floor_2.png", 3)
+dark_image("64x64_floor_2.png", 4)
+dark_image("64x64_floor_2.png", 5)
+dark_image("64x64_floor_2.png", 6)
+dark_image("64x64_floor_2.png", 7)
+dark_image("64x64_floor_2.png", 8)
+
+
+
+
+
+
+
+
 # for i in range(1, 11):
 #     resize("Shoot_Animation-" + str(i) + ".png", 128, "shoot_animation_" + str(i) + ".png")
 #

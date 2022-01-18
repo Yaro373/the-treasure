@@ -125,22 +125,22 @@ class Character(Creature):
         level = view.level.LevelManager.get_current_level()
         if event is not None:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_w:
                     self.move_data[0] = 1
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_d:
                     self.move_data[1] = 1
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_s:
                     self.move_data[2] = 1
-                elif event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_a:
                     self.move_data[3] = 1
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_w:
                     self.move_data[0] = 0
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_d:
                     self.move_data[1] = 0
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_s:
                     self.move_data[2] = 0
-                elif event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_a:
                     self.move_data[3] = 0
 
         if self.move_data[0] == 1:

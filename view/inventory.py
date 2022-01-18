@@ -136,14 +136,14 @@ class Inventory(BaseInventory):
         super().basic_draw(1)
 
     def check_use(self, event):
-        if event.key == pygame.K_u:
+        if event.button == 3:
             if Temp.temp is not None:
                 view.items.Item.use(Temp.temp.item_name)
                 Temp.temp = None
 
     def update(self, event):
         super().update(event)
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             if Temp.temp is not None:
                 if Temp.temp.start_from == 'main':
                     self.items[Temp.temp.start_cell_index] = None
@@ -165,7 +165,7 @@ class ChestInventory(BaseInventory):
 
     def update(self, event):
         super().update(event)
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             if Temp.temp is not None:
                 if Temp.temp.start_from == 'chest':
                     self.items[Temp.temp.start_cell_index] = None

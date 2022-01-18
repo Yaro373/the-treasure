@@ -9,6 +9,14 @@ from parameters import GAME_TITLE
 from main_menu import start_screen
 
 
+# управление wasd - перемещение V
+# e - открыть сундук V
+# z - следующий уровень V
+# f - удалить предмет V
+# space - выстрел V
+# right mouse button - использовать предмет V
+
+
 if __name__ == '__main__':
     pygame.init()
     size = w, h = 800, 600
@@ -44,13 +52,14 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 model.data_saver.DataSaver.save()
                 loop = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                level.main_inventory.check_use(event)
             if event.type == pygame.KEYDOWN:
                 level.dungeon.character_sprite_group.update(event)
                 level.dungeon.chest_sprite_group.update(event)
-                level.main_inventory.check_use(event)
             if event.type == pygame.KEYUP:
                 level.dungeon.character_sprite_group.update(event)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_n:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
                 result = view.intro.show_intro(f'Уровень {view.level.LevelManager.level_num + 1}')
                 if result == 0:
                     model.data_saver.DataSaver.save()
