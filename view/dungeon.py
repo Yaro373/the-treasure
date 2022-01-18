@@ -18,8 +18,10 @@ FAKE_STATUE_SIGN = 5
 
 
 class Dungeon:
-    def __init__(self, data, chests_inventory=None, enemies_positions=None):
+    def __init__(self, data, wall_sprite, floor_sprite, chests_inventory=None, enemies_positions=None):
         self.data = data
+        self.wall_sprite = wall_sprite
+        self.floor_sprite = floor_sprite
         self.chests_inventory = chests_inventory
         self.enemies_positions = enemies_positions
         self.walls_sprite_group = pygame.sprite.Group()
@@ -37,7 +39,7 @@ class Dungeon:
         for row in range(0, len(self.data)):
             for col in range(0, len(self.data)):
                 if self.data[row][col] == WALL_SIGN:
-                    wall1 = Wall1(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
+                    wall1 = self.wall_sprite(row * CELL_SIZE, col * CELL_SIZE, self.walls_sprite_group,
                            self.all_sprites)
                     self.sprites_matrix[row][col] = (wall1, )
 
@@ -48,7 +50,7 @@ class Dungeon:
                     self.sprites_matrix[row][col] = (uwall, )
 
                 elif self.data[row][col] == CHEST_SIGN:
-                    floor1 = Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
+                    floor1 = self.floor_sprite(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
                                     self.all_sprites)
                     if self.chests_inventory is not None and (row, col) in self.chests_inventory.keys():
                         chest = Chest(row * CELL_SIZE, col * CELL_SIZE, False,
@@ -61,7 +63,7 @@ class Dungeon:
                     self.sprites_matrix[row][col] = (floor1, chest, )
 
                 else:
-                    floor1 = Floor1(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
+                    floor1 = self.floor_sprite(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
                            self.all_sprites)
 
                     self.sprites_matrix[row][col] = (floor1, )

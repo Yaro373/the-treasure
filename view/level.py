@@ -14,8 +14,9 @@ chest_inventory = 'chest_inventory'
 class LevelCreator:
     @staticmethod
     def new_level(num):
-        data = view.level_data.LEVELS[num]
-        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(data.dungeon_size))
+        data = view.level_data.LevelGetter.get_level_by_num(num)
+        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(data.dungeon_size),
+                                       data.wall_sprite, data.floor_sprite)
         items = model.value_manager.ValueManager.inventory
         x_pos = 1
         y_pos = 1
