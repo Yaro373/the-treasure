@@ -98,7 +98,7 @@ class Character(Creature):
         if self.can_fire():
             self.set_fire_moment()
             x, y = self.rect.x, self.rect.y
-            Arrow(x, y, self.direction, *group)
+            Arrow(x + self.rect.w // 2, y + self.rect.h // 2, self.direction, *group)
 
     def set_visibility(self, visibility):
         if visibility:

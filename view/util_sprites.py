@@ -14,13 +14,13 @@ class Arrow(pygame.sprite.Sprite):
         self.level = view.level.LevelManager.get_current_level()
 
         if direction == 1:
-            self.image = load_image('32x32_arrow1.png')
+            self.image = load_image('arrow1.png')
         elif direction == 2:
-            self.image = load_image('32x32_arrow2.png')
+            self.image = load_image('arrow2.png')
         elif direction == 3:
-            self.image = load_image('32x32_arrow3.png')
+            self.image = load_image('arrow3.png')
         else:
-            self.image = load_image('32x32_arrow4.png')
+            self.image = load_image('arrow4.png')
 
         self.rect = self.image.get_rect()
 
