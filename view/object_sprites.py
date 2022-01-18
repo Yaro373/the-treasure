@@ -8,6 +8,7 @@ import view.level
 import view.inventory
 import pygame
 import view.items
+import resources.strings
 
 
 class BaseObjectSprite(pygame.sprite.Sprite):
@@ -219,7 +220,8 @@ class Chest(BaseObjectSprite):
         else:
             if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
                     (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
-                model.tip.TipManager.create_tip('Нажмите "o", чтобы открыть сундук', 1250)
+                model.tip.TipManager.create_tip(resources.strings.open_chest,
+                                                while_coord=self.get_dung_coords())
                 self.show_inventory()
             else:
                 self.close_inventory()
