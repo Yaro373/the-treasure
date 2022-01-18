@@ -44,6 +44,7 @@ def dark_image(filename, d):
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
+
 resize("Floor2.png", 64, "floor_2.png")
 
 dark_image("64x64_floor_2.png", 1)
@@ -54,13 +55,6 @@ dark_image("64x64_floor_2.png", 5)
 dark_image("64x64_floor_2.png", 6)
 dark_image("64x64_floor_2.png", 7)
 dark_image("64x64_floor_2.png", 8)
-
-
-
-
-
-
-
 
 # for i in range(1, 11):
 #     resize("Shoot_Animation-" + str(i) + ".png", 128, "shoot_animation_" + str(i) + ".png")
@@ -79,14 +73,6 @@ dark_image("64x64_floor_2.png", 8)
 # #       )
 #
 #
-# for i in range(1, 6):
-#     resize("Holding_Bow_Body_Animation-" + str(i) + ".png", 128, "shoot_animation_" + str(i) +
-#     ".png")
-#
-# merge("128x128_shoot_animation_1.png",
-#       "128x128_shoot_animation_2.png",
-#       "128x128_shoot_animation_3.png",
-#       "128x128_shoot_animation_4.png",
-#       "128x128_shoot_animation_5.png",
-#       size=128, outfilename="128_128_bow_run_animation.png"
-#       )
+resize("Default ghost 1 get damage.png", 128, "ghost_1_get_damage.png")
+resize("Default ghost 2 get damage.png", 128, "ghost_2_get_damage.png")
+resize("Ghost 3 get damage.png", 128, "ghost_3_get_damage.png")
