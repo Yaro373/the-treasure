@@ -178,15 +178,15 @@ class Chest(BaseObjectSprite):
 
     def __init__(self, x, y, opened, *group, items=None):
         i = Chest.closed_chest_image
-        super().__init__(Chest.opened_chest_image,
-                         Chest.closed_chest_image_0,
+        super().__init__(Chest.closed_chest_image_0,
                          Chest.closed_chest_image_1,
                          Chest.closed_chest_image_2,
                          Chest.closed_chest_image_3,
                          Chest.closed_chest_image_4,
                          Chest.closed_chest_image_5,
                          Chest.closed_chest_image_6,
-                         Chest.closed_chest_image_7, x, y, *group)
+                         Chest.closed_chest_image_7,
+                         Chest.closed_chest_image_8, x, y, *group)
         self.showing = False
         self.opened = opened
         # TODO чтение из файла
@@ -229,7 +229,6 @@ class Chest(BaseObjectSprite):
     def open_chest(self):
         if not self.opened:
             self.light_images = [
-                Chest.opened_chest_image_0,
                 Chest.opened_chest_image_1,
                 Chest.opened_chest_image_2,
                 Chest.opened_chest_image_3,
@@ -237,6 +236,7 @@ class Chest(BaseObjectSprite):
                 Chest.opened_chest_image_5,
                 Chest.opened_chest_image_6,
                 Chest.opened_chest_image_7,
+                Chest.opened_chest_image_8,
             ]
             view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.opened = True
