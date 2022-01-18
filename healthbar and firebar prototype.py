@@ -8,12 +8,12 @@ DARK_HEALTH_COLOR = "#cc0a00"
 FIRE_COLOR = "#ff6603"
 DARK_FIRE_COLOR = "#ff1500"
 
-high_heart_image_file_path = "64x64 Heart.png"
-mid_heart_image_file_path = "64x64 midhealth.png"
-low_heart_image_file_path = "64x64 lowhpheart.png"
-high_fire_image_file_path = "64x64 Fire high.png"
-mid_fire_image_file_path = "64x64 Fire mid.png"
-low_fire_image_file_path = "64x64 Fire low.png"
+high_heart_image_file_path = "64x64_heart_high.png"
+mid_heart_image_file_path = "64x64_heart_mid.png"
+low_heart_image_file_path = "64x64_heart_low.png"
+high_fire_image_file_path = "64x64_fire_high.png"
+mid_fire_image_file_path = "64x64_fire_mid.png"
+low_fire_image_file_path = "64x64_fire_low.png"
 
 pygame.init()
 size = width, height = 500, 500
@@ -65,8 +65,6 @@ class Bar:
 
     def change_image(self, rect_width=2, red_health_coef=0.82, color_dark=pygame.Color("black"),
                      color_light=pygame.Color("White")):
-        # todo оптимизировать рендер. Сначала нужно создавать один холст, а потом приклеивать
-        # todo к surface именно его
         x = self.x + self.image_width / 2
         y = self.y + self.image_height / 4
         w0 = self.image_width * 3
@@ -131,11 +129,11 @@ class Bar:
 
         # рисуем
         if self.param > self.mid_value:
-            surface.blit(self.high_image, (0,0))
+            surface.blit(self.high_image, (self.x,self.y))
         elif self.param > self.low_value:
-            surface.blit(surface, (0,0))
+            surface.blit(self.mid_image, (self.x,self.y))
         else:
-            surface.blit(self.low_image, (0,0))
+            surface.blit(self.low_image, (self.x,self.y))
         self.image = surface
         print(surface)
 
@@ -176,7 +174,7 @@ if __name__ == '__main__':
     loop = True
 
     healthbar = HealthBar(0,0)
-    firebar = FireBar(0,0)
+    firebar = FireBar(0,-10)
     fps = 30
     clock = pygame.time.Clock()
 

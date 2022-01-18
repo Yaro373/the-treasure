@@ -1,10 +1,22 @@
 from PIL import Image
 
 
-def resize(filename, size):
+def resize(filename, size, res_name=None):
+    if res_name is None:
+        res_name = filename
     img = Image.open(filename)
     img = img.resize((size, size))
-    img.save(f"{size}x{size}_" + filename)
+    img.save(f"{size}x{size}_" + res_name)
+
+
+def merge(*filenames, size=128, outfilename="out.png"):
+    img = Image.new("RGBA", (len(filenames) * size, size))
+    img2 = Image.open(filenames[0])
+    img.paste(img2, (0, 0, img2.size[0], img2.size[1]))
+    for i in range(len(filenames)):
+        img2 = Image.open(filenames[i])
+        img.paste(Image.open(filenames[i]), (size * i, 0, size * i + img2.size[0], img2.size[1]))
+    img.save(outfilename)
 
 
 def dark_image(filename, d):
@@ -32,5 +44,9 @@ def dark_image(filename, d):
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
-
-resize('dream_catcher.png', 48)
+resize("Fire high.png", 64, "fire_high.png")
+resize("Fire low new.png", 64, "fire_low.png")
+resize("Fire mid new.png", 64, "fire_mid.png")
+resize("Heart.png", 64, "heart_high.png")
+resize("lowhpheart.png", 64, "heart_low.png")
+resize("mid health.png", 64, "heart_mid.png")
