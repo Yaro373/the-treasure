@@ -83,7 +83,9 @@ class Character(Creature):
     def __init__(self, x, y, items, *group):
         super().__init__(Character.image, x, y, Character.characteristics, *group)
         self.speed = 4
+        self.hearing_area_size = 5
         self.lighting_area = 1
+        self.hearing_area = set()
         self.direction = 1
         self.move_data = [0, 0, 0, 0]
         self.prev_coord = None
@@ -185,7 +187,12 @@ class Character(Creature):
             self.prev_coord = coord
             self.prev_d_coord = d_coord
 
+        self.hearing_area = view.level.LevelManager.get_current_level().dungeon\
+            .get_radius_neighbours_coords(self.hearing_area_size)
         self.__make_light(level)
+
+    def get_hearing_area(self):
+        return self.hearing_area
 
     def start_log(self):
         self.path.clear()
@@ -232,6 +239,8 @@ class Character(Creature):
 
 class Ghost(Creature):
     image = load_image('32x32_ghost.png')
+    not_visible_image = image.copy()
+    not_visible_image.set_alpha(0)
 
     def __init__(self, x, y, level, *group):
         data = GhostDataManager.get_data_by_level(level)
@@ -334,6 +343,12 @@ class Ghost(Creature):
                 if main_hero_coords == coords and self.can_attack():
                     self.start_attack()
                     character.start_log()
+
+    def set_not_visible(self):
+        self.image = Ghost.not_visible_image
+
+    def set_visible(self):
+        self.image = Ghost.image
 
     def fire(self, *group):
         level = view.level.LevelManager.get_current_level()

@@ -67,7 +67,7 @@ class Dungeon:
                            self.all_sprites)
 
                     self.sprites_matrix[row][col] = (floor1, )
-        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, 3, self.ghost_sprite_group,
+        view.creature.Ghost(3 * CELL_SIZE, 3 * CELL_SIZE, 1, self.ghost_sprite_group,
                             self.all_sprites)
         if self.enemies_positions is not None:
             for pos in self.enemies_positions:
@@ -80,6 +80,11 @@ class Dungeon:
                 level.character.fire(self.weapon_sprite_group, self.all_sprites)
         for ghost in self.ghost_sprite_group:
             ghost.fire(self.weapon_sprite_group, self.all_sprites)
+            hearing_area = level.character.get_hearing_area()
+            if ghost.get_dung_coords() in hearing_area or ghost.get_d_dung_coords() in hearing_area:
+                ghost.set_visible()
+            else:
+                ghost.set_not_visible()
 
         dc = level.character.get_dung_coords()
         ddc = level.character.get_d_dung_coords()
