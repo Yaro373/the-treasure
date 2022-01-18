@@ -1,5 +1,6 @@
 import model.value_manager
 import view.level
+import resources.strings
 from model.util import load_image, seconds_to_milliseconds
 from model.value_manager import ValueManager
 
@@ -34,6 +35,16 @@ images = {
 
 
 class Item:
+    __printable_names = {
+        'tea': resources.strings.tea,
+        'hearing_potion': resources.strings.hearing_potion,
+        'speed_potion': resources.strings.speed_potion,
+        'oil': resources.strings.oil,
+        'bag': resources.strings.bag,
+        'dream_catcher': resources.strings.dream_catcher,
+        'invisibility_potion': resources.strings.invisibility_potion
+    }
+
     @staticmethod
     def use(item_name):
         if item_name is None:
@@ -52,6 +63,10 @@ class Item:
             Item.dream_catcher()
         elif item_name == 'invisibility_potion':
             Item.invisibility_potion()
+
+    @staticmethod
+    def get_printable_name(name):
+        return Item.__printable_names[name]
 
     @staticmethod
     def tea():

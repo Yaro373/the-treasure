@@ -1,6 +1,10 @@
+import random
+import time
+
 import pygame
 import view.items
 import view.level
+import model.tip
 
 
 class Temp:
@@ -23,6 +27,7 @@ class BaseInventory:
         self.background_color = bg_color
         self.cell_color = c_color
         self.hovered_cell_color = h_c_color
+        self.hovered_cell = -1
         self.items = items
 
     def basic_draw(self, y_cf):
@@ -41,14 +46,21 @@ class BaseInventory:
         y = int(h * y_cf) - element_size
 
         mouse_pos = pygame.mouse.get_pos()
+        hovered = False
         n = 0
         for i in range(element_size // 10, surface.get_width(), element_size - element_size // 10):
             cell_x, cell_y = i, element_size // 10
             cell_size = element_size - element_size // 5
 
             if self.is_coord_in_cell(cell_x, cell_y, x, y, mouse_pos[0], mouse_pos[1], cell_size):
+                hovered = True
                 pygame.draw.rect(surface, self.hovered_cell_color,
                                  (cell_x, cell_y, cell_size, cell_size))
+                if n != self.hovered_cell:
+                    model.tip.TipManager.stop_showing()
+                if self.items[n] is not None:
+                    model.tip.TipManager.create_tip(view.items.Item.get_printable_name(self.items[n]))
+                    self.hovered_cell = n
             else:
                 pygame.draw.rect(surface, self.cell_color, (cell_x, cell_y, cell_size, cell_size))
 
@@ -83,6 +95,9 @@ class BaseInventory:
                 view.items.images[Temp.temp.item_name],
                 (mouse_pos[0] - view.items.size // 2,
                  mouse_pos[1] - view.items.size // 2))
+
+        if not hovered:
+            model.tip.TipManager.stop_showing()
 
 
     @staticmethod
