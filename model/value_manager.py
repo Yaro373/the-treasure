@@ -42,7 +42,7 @@ class ValueManager:
         health = ValueManager.health
         after = ValueManager.health + add
         ValueManager.health = min(after, 100)
-        ValueManager.health = max(after, 0)
+        ValueManager.health = max(ValueManager.health, 0)
         ValueManager.update_health_data.append((ValueManager.health - health, for_time, pygame.time.get_ticks()))
 
     @staticmethod
@@ -50,7 +50,7 @@ class ValueManager:
         hearing = ValueManager.hearing
         after = ValueManager.hearing + add
         ValueManager.hearing = min(after, 100)
-        ValueManager.hearing = max(after, 0)
+        ValueManager.hearing = max(ValueManager.hearing, 0)
         ValueManager.update_hearing_data.append((ValueManager.hearing - hearing, for_time, pygame.time.get_ticks()))
 
     @staticmethod
@@ -58,7 +58,7 @@ class ValueManager:
         speed = ValueManager.speed
         after = ValueManager.speed + add
         ValueManager.speed = min(after, 5)
-        ValueManager.speed = max(after, 0)
+        ValueManager.speed = max(ValueManager.speed, 0)
         ValueManager.update_speed_data.append((ValueManager.speed - speed, for_time, pygame.time.get_ticks()))
 
     @staticmethod
@@ -66,7 +66,7 @@ class ValueManager:
         light = ValueManager.light
         after = ValueManager.light + add
         ValueManager.light = min(after, 7)
-        ValueManager.light = max(after, 0)
+        ValueManager.light = max(ValueManager.light, 0)
         ValueManager.update_light_data.append((ValueManager.light - light, for_time, pygame.time.get_ticks()))
 
     @staticmethod
