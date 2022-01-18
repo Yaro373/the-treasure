@@ -1,1 +1,1 @@
-oil;oil;oil;invisibility_potion;dream_catcher;
+oil;oil;oil;old_clock;dream_catcher;

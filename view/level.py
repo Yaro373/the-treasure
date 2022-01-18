@@ -82,5 +82,10 @@ class LevelManager:
         LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
 
     @staticmethod
+    def reload_level():
+        LevelManager.level.dungeon.kill()
+        LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
+
+    @staticmethod
     def load_level():
         LevelManager.level = LevelCreator.load_level()

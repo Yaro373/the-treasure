@@ -55,6 +55,8 @@ class Item:
             return
         if item_name == 'tea':
             Item.tea()
+        elif item_name == 'hot_tea':
+            Item.hot_tea()
         elif item_name == 'hearing_potion':
             Item.hearing_potion()
         elif item_name == 'speed_potion':
@@ -67,6 +69,8 @@ class Item:
             Item.dream_catcher()
         elif item_name == 'invisibility_potion':
             Item.invisibility_potion()
+        elif item_name == 'old_clock':
+            Item.old_clock()
 
     @staticmethod
     def get_printable_name(name):
@@ -75,12 +79,12 @@ class Item:
     @staticmethod
     def tea():
         ValueManager.update_speed(1, for_time=seconds_to_milliseconds(60))
-        ValueManager.update_health(5)
+        ValueManager.update_health(10)
 
     @staticmethod
     def hot_tea():
-        ValueManager.update_speed(1, for_time=seconds_to_milliseconds(60))
-        ValueManager.update_health(5)
+        ValueManager.update_speed(3, for_time=seconds_to_milliseconds(60))
+        ValueManager.update_health(25)
 
     @staticmethod
     def hearing_potion():
@@ -109,4 +113,8 @@ class Item:
     @staticmethod
     def invisibility_potion():
         model.value_manager.ValueManager.set_invisibility(seconds_to_milliseconds(10))
+
+    @staticmethod
+    def old_clock():
+        view.level.LevelManager.reload_level()
 
