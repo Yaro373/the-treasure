@@ -44,6 +44,8 @@ class Creature(pygame.sprite.Sprite):
         self.fire_interval = characteristics.fire_interval
         self.harm = characteristics.harm
 
+        self.current_speed = self.speed
+
         self.fire_moment = -1
 
     # Положение на координатной оси верхнего левого края
@@ -254,21 +256,22 @@ class Ghost(Creature):
         prev_pos = (self.rect.x, self.rect.y)
         cnt_speed = random.choice([2, 4, 6, 8, 16])
         if direction == 1:
-            self.rect.y -= (self.speed + cnt_speed)
+            self.rect.y -= (self.current_speed + cnt_speed)
         elif direction == 2:
-            self.rect.x += (self.speed + cnt_speed)
+            self.rect.x += (self.current_speed + cnt_speed)
         elif direction == 3:
-            self.rect.y += (self.speed + cnt_speed)
+            self.rect.y += (self.current_speed + cnt_speed)
         elif direction == 4:
-            self.rect.x -= (self.speed + cnt_speed)
+            self.rect.x -= (self.current_speed + cnt_speed)
 
         # TODO dev
         dev = 0
         if self.attacking:
+            self.__clear_cnt_speed(direction, cnt_speed)
             if not self.can_attack():
                 self.end_attack()
-            self.__clear_cnt_speed(direction, cnt_speed)
-            if (time.time() - self.start_attack_moment) >= self.attack_time:
+                character.end_log()
+            elif (time.time() - self.start_attack_moment) >= self.attack_time:
                 self.end_attack()
                 character.end_log()
             elif self.get_dung_coords(dev) == self.get_d_dung_coords(dev) \
@@ -352,11 +355,12 @@ class Ghost(Creature):
         self.start_attack_moment = time.time()
         self.main_hero_pos_index = len(view.level.LevelManager
                                        .get_current_level().character.get_path()) - 1
-        self.speed *= 2
+        self.current_speed = self.speed * 2
 
     def end_attack(self):
         self.attacking = False
-        self.speed //= 2
+        self.direction = random.choice([1, 2, 3, 4])
+        self.current_speed = self.speed
 
     def __clear_cnt_speed(self, direction, cnt_speed):
         if direction == 1:
