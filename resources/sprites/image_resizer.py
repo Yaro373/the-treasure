@@ -44,9 +44,4 @@ def dark_image(filename, d):
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
 
-resize("Fire high.png", 64, "fire_high.png")
-resize("Fire low new.png", 64, "fire_low.png")
-resize("Fire mid new.png", 64, "fire_mid.png")
-resize("Heart.png", 64, "heart_high.png")
-resize("lowhpheart.png", 64, "heart_low.png")
-resize("mid health.png", 64, "heart_mid.png")
+resize("Unbreakable Wall.png", 64, "unbreakable_wall.png")

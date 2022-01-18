@@ -6,6 +6,7 @@ import model.data_saver
 import model.tip
 import view.intro
 from parameters import GAME_TITLE
+from main_menu import start_screen
 
 
 if __name__ == '__main__':
@@ -32,6 +33,9 @@ if __name__ == '__main__':
 
     fps = 60
     clock = pygame.time.Clock()
+
+    start_screen(screen, clock)
+
     while loop:
         events = False
         level = level_manager.get_current_level()

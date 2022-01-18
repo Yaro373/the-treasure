@@ -86,9 +86,8 @@ class Wall3(BaseObjectSprite):
                          Wall3.image_8, x, y, *group)
 
 
-# TODO поменять спрайты
 class UnbreakableWall(BaseObjectSprite):
-    image = load_image('64x64_wall_3.png')
+    image = load_image('64x64_unbreakable_wall.png')
 
     def __init__(self, x, y, *group):
         i = self.image
