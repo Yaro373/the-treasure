@@ -69,6 +69,7 @@ class MainCharacter:
         self.sword_attack_group = pygame.sprite.Group()
         self.sword_run_group = pygame.sprite.Group()
         self.bow_group = pygame.sprite.Group()
+        self.shoot_group = pygame.sprite.Group()
         self.lamp_group = pygame.sprite.Group()
         self.nothing_group = pygame.sprite.Group()
         self.legs = AnimatedSprite(load_image("128_128_legs_animation.png"), 10, 1, 128, 128,
@@ -81,6 +82,10 @@ class MainCharacter:
                                    self.sword_run_group)
         self.body_lamp_run = AnimatedSprite(load_image("128_128_oil_lamp_body_animation.png"), 5, 1, 128, 128,
                                    self.lamp_group)
+        self.body_shoot = AnimatedSprite(load_image("128_128_shoot_animation.png"), 10, 1, 128, 128,
+                                   self.shoot_group)
+        self.body_bow_run = AnimatedSprite(load_image("128_128_bow_run_animation.png"), 5, 1, 128, 128,
+                                   self.bow_group)
         self.mode = 0 # 0 - nothing, 1 - sword, 2 - sword_run, 3 - lamp, 4 - bow run, 5 - bow shoot
         self.move(self.x, self.y)
         self.update()
@@ -94,10 +99,16 @@ class MainCharacter:
         self.body.rect.y = self.y - self.body_cords[self.legs.cur_frame]
 
     def attack(self):
-        self.mode = 1
-        self.update()
-        # todo сделать так, чтобы персонаж атаковал 1 раз,
-        # todo а затем возвращался в предыдущее состояние
+        if self.mode == 2:
+            self.mode = 1
+            self.body_sword_attack.cur_frame = 0
+            self.prev_sheet = 0
+            self.update()
+        if self.mode == 4:
+            self.mode = 5
+            self.body_sword_attack.cur_frame = 0
+            self.prev_sheet = 0
+            self.update()
 
     def set_mode(self, mode):
         self.mode = mode
@@ -113,6 +124,13 @@ class MainCharacter:
             self.sword_run_group.draw(surface)
         if self.mode == 3:
             self.lamp_group.draw(surface)
+        if self.mode == 4:
+            self.bow_group.draw(surface)
+        if self.mode == 5:
+            self.shoot_group.draw(surface)
+
+    def spawn_arrow(self):
+        pass  # todo здесь должна спавниться стрела
 
     def update(self):
         cur_sprite = None
@@ -120,13 +138,30 @@ class MainCharacter:
         if self.mode == 0:
             cur_sprite = self.body
             cur_sprite.cur_frame = self.legs.cur_frame
-        elif self.mode == 1:
+        if self.mode == 1:
             cur_sprite = self.body_sword_attack
-        elif self.mode == 2:
+            if self.prev_sheet > cur_sprite.cur_frame:
+                self.prev_sheet = 0
+                self.mode = 2
+            else:
+                self.prev_sheet = cur_sprite.cur_frame
+        if self.mode == 2:
             cur_sprite = self.body_sword_run
             cur_sprite.cur_frame = self.legs.cur_frame % 5
-        elif self.mode == 3:
+        if self.mode == 3:
             cur_sprite = self.body_lamp_run
+            cur_sprite.cur_frame = self.legs.cur_frame % 5
+
+        if self.mode == 5:
+            cur_sprite = self.body_shoot
+            if self.prev_sheet > cur_sprite.cur_frame:
+                self.prev_sheet = 0
+                self.spawn_arrow()
+                self.mode = 4
+            else:
+                self.prev_sheet = cur_sprite.cur_frame
+        if self.mode == 4:
+            cur_sprite = self.body_bow_run
             cur_sprite.cur_frame = self.legs.cur_frame % 5
         # сдесь регулируется анимация персонажа
         y = self.y - self.body_cords[self.legs.cur_frame]
@@ -159,6 +194,10 @@ if __name__ == '__main__':
                     character.set_mode(2)
                 if event.key == pygame.K_4:
                     character.set_mode(3)
+                if event.key == pygame.K_5:
+                    character.set_mode(4)
+                if event.key == pygame.K_6:
+                    character.set_mode(5)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     character.attack()
