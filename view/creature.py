@@ -344,6 +344,9 @@ class Ghost(Creature):
                     self.start_attack()
                     character.start_log()
 
+        if self.health <= 0:
+            self.kill()
+
     def set_not_visible(self):
         self.image = Ghost.not_visible_image
 
