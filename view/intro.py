@@ -5,7 +5,7 @@ import model.data_saver
 def show_intro(text_string):
     result = 1
     alpha = 0
-    add = 0.35
+    add = 1
     clock = pygame.time.Clock()
     screen = pygame.display.get_surface()
     loop = True
