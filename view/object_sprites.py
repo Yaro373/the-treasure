@@ -211,7 +211,7 @@ class Chest(BaseObjectSprite):
     def update(self, event):
         level = view.level.LevelManager.get_current_level()
         if event is not None:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_o:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_e:
                 if (self.dung_x, self.dung_y) == level.character.get_dung_coords() or \
                         (self.dung_x, self.dung_y) == level.character.get_d_dung_coords():
                     self.open_chest()

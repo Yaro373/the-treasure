@@ -1,8 +1,8 @@
 import os
 import sys
-
 import pygame
-
+import random
+import view.level
 # Изображение не получится загрузить
 # без предварительной инициализации pygame
 pygame.init()
@@ -21,6 +21,44 @@ def load_image(name, colorkey=None):
 
 
 all_sprites = pygame.sprite.Group()
+
+
+class Arrow(pygame.sprite.Sprite):
+
+    def __init__(self, x, y, direction, *group):
+        super().__init__(*group)
+        self.direction = direction
+        self.speed = 5
+        self.level = view.level.LevelManager.get_current_level()
+
+        if direction == 1:
+            self.image = load_image('arrow1.png')
+        elif direction == 2:
+            self.image = load_image('arrow2.png')
+        elif direction == 3:
+            self.image = load_image('arrow3.png')
+        else:
+            self.image = load_image('arrow4.png')
+
+        self.rect = self.image.get_rect()
+
+        self.rect.x = x
+        self.rect.y = y
+
+        if self.direction in (2, 4):
+            self.rect.y += random.randint(-4, 4)
+        elif self.direction in (1, 3):
+            self.rect.x += random.randint(-4, 4)
+
+    def update(self):
+        if self.direction == 1:
+            self.rect.y -= self.speed
+        elif self.direction == 2:
+            self.rect.x += self.speed
+        elif self.direction == 3:
+            self.rect.y += self.speed
+        elif self.direction == 4:
+            self.rect.x -= self.speed
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
@@ -54,6 +92,14 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
     def get_sheet_count(self):
         return len(self.frames)
+
+# нажми 3 а затем лкм, и поймешь как это работает
+# потом нажми 5 и лкм
+# потом нажми 4
+# возможно спрайт большеват, так что позаботься, чтобы он не врезался головой,
+# а она лежала сверху стены
+# но можешь и уменьшить все спрайты, связанные с анимацией. Но учти, что функция resize писалась для
+# квадратных изображений
 
 
 class MainCharacter:
@@ -98,6 +144,22 @@ class MainCharacter:
         self.body.rect.x = self.x
         self.body.rect.y = self.y - self.body_cords[self.legs.cur_frame]
 
+        self.body_shoot.rect.x = self.x
+        self.body_shoot.rect.y = self.y - self.body_cords[self.legs.cur_frame]
+
+        self.body_bow_run.rect.x = self.x
+        self.body_bow_run.rect.y = self.y - self.body_cords[self.legs.cur_frame]
+
+        self.body_lamp_run.rect.x = self.x
+        self.body_lamp_run.rect.y = self.y - self.body_cords[self.legs.cur_frame]
+
+        self.body_sword_run.rect.x = self.x
+        self.body_sword_run.rect.y = self.y - self.body_cords[self.legs.cur_frame]
+
+        self.body_sword_attack.rect.x = self.x
+        self.body_sword_attack.rect.y = self.y - self.body_cords[self.legs.cur_frame]
+
+
     def attack(self):
         if self.mode == 2:
             self.mode = 1
@@ -130,9 +192,10 @@ class MainCharacter:
             self.shoot_group.draw(surface)
 
     def spawn_arrow(self):
-        pass  # todo здесь должна спавниться стрела
+        Arrow(self.x, self.y, 1, self.legs_group)  # todo разобраться
 
     def update(self):
+        print("dsafdfs")
         cur_sprite = None
         self.legs.update()  # обновляем ноги
         if self.mode == 0:
@@ -180,7 +243,7 @@ if __name__ == '__main__':
     loop = True
     clock = pygame.time.Clock()
     character = MainCharacter(0, 0)
-
+    time = 0
     while loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -204,9 +267,11 @@ if __name__ == '__main__':
 
         screen.fill((0, 0, 0))
         character.draw(screen)
-        character.update()
+        if time >= 100:
+            character.update()
+            time = 0
         character.move(character.x + 1, character.y + 1)
-        # ...
-        clock.tick(10)
+        # стрелы спавнятся, но не летят, не знаю по чему
+        time += clock.tick(60)
         pygame.display.flip()
     pygame.quit()
