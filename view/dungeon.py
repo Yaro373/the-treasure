@@ -23,6 +23,7 @@ class Dungeon:
         self.wall_sprite = wall_sprite
         self.floor_sprite = floor_sprite
         self.chests_inventory = chests_inventory
+        print(self.chests_inventory)
         self.enemies_positions = enemies_positions
         self.walls_sprite_group = pygame.sprite.Group()
         self.floor_sprite_group = pygame.sprite.Group()
@@ -53,7 +54,7 @@ class Dungeon:
                     floor1 = self.floor_sprite(row * CELL_SIZE, col * CELL_SIZE, self.floor_sprite_group,
                                     self.all_sprites)
                     if self.chests_inventory is not None and (row, col) in self.chests_inventory.keys():
-                        chest = Chest(row * CELL_SIZE, col * CELL_SIZE, False,
+                        chest = Chest(row * CELL_SIZE, col * CELL_SIZE, self.chests_inventory[(row, col)][0],
                                       self.chest_sprite_group, self.all_sprites,
                                       items=self.chests_inventory[(row, col)][1])
                     else:

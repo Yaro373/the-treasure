@@ -5,6 +5,7 @@ import pygame
 import view.items
 import view.level
 import model.tip
+import model.value_manager
 
 
 class Temp:
@@ -143,6 +144,7 @@ class Inventory(BaseInventory):
 
     def update(self, event):
         super().update(event)
+        model.value_manager.ValueManager.inventory = self.items
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             if Temp.temp is not None:
                 if Temp.temp.start_from == 'main':

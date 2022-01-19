@@ -12,9 +12,8 @@ RANDOM_ITEMS_LIST = {
     'dream_catcher': 0.03,
     'bag': 0.15,
     'old_clock': 0.02,
-    'hearing_potion': 0.10,
+    'hearing_potion': 0.15,
     'speed_potion': 0.10,
-    'music_box': 0.05,
     'snow_ball': 0.05,
     'invisibility_potion': 0.10,
 }
@@ -28,7 +27,6 @@ images = {
     'old_clock': load_image('48x48_old_clock.png'),
     'hearing_potion': load_image('48x48_hearing_potion.png'),
     'speed_potion': load_image('48x48_speed_potion.png'),
-    'music_box': load_image('48x48_music_box.png'),
     'snow_ball': load_image('48x48_snow_ball.png'),
     'invisibility_potion': load_image('48x48_invisibility_potion.png'),
 }
@@ -39,7 +37,6 @@ class Item:
         'tea': resources.strings.tea,
         'hot_tea': resources.strings.hot_tea,
         'old_clock': resources.strings.old_clock,
-        'music_box': resources.strings.music_box,
         'snow_ball': resources.strings.snow_ball,
         'hearing_potion': resources.strings.hearing_potion,
         'speed_potion': resources.strings.speed_potion,
