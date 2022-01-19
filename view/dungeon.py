@@ -70,7 +70,7 @@ class Dungeon:
                     self.sprites_matrix[row][col] = (floor1, )
         if self.enemies_positions is not None:
             for pos in self.enemies_positions:
-                view.creature.Ghost(pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, 3, self.ghost_sprite_group, self.all_sprites)
+                view.creature.Ghost(pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, 1, self.ghost_sprite_group, self.all_sprites)
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()

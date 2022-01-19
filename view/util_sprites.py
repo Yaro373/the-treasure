@@ -82,3 +82,30 @@ class GhostBall(pygame.sprite.Sprite):
         if character := pygame.sprite.spritecollideany(self, self.level.dungeon.character_sprite_group):
             self.kill()
             character.correct_health(-self.harm)
+
+
+class AnimatedGhostBall(GhostBall):
+    frame1 = load_image('32x32_ghostball_frame1.png')
+    frame2 = load_image('32x32_ghostball_frame2.png')
+    frame3 = load_image('32x32_ghostball_frame3.png')
+    frame4 = load_image('32x32_ghostball_frame4.png')
+    frames = [frame1, frame2, frame3, frame4]
+
+    def __init__(self, x, y, direction, speed, harm, surface):
+        super().__init__(x, y, direction, speed, harm, surface)
+        self.frames = AnimatedGhostBall.frames
+        self.surface = surface
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(x, y)
+        self.time = pygame.time.get_ticks()
+
+    def update(self):
+        if super() is None:
+            self.kill()
+        super().update()
+        if (n_time := pygame.time.get_ticks()) - self.time > 50:
+            self.time = n_time
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.image = self.frames[self.cur_frame]

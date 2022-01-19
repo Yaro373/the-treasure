@@ -43,6 +43,3 @@ def dark_image(filename, d):
             pixels[i, j] = r, g, b
 
     img.save(filename[:5] + f'_{d}' + filename[5:])
-
-
-resize("ghost3.png", 48)

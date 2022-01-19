@@ -8,6 +8,7 @@ import view.level
 import view.dungeon
 import time
 import model.game_ender
+import model.animation
 
 
 class PathIncorrectLoopException(Exception):
@@ -27,7 +28,7 @@ class GhostCharacteristics:
         self.base_characteristics = base_characteristics
         self.see_radius = see_radius
         self.attack_time = attack_time
-        self.fire_speed = base_characteristics.speed + 10
+        self.fire_speed = base_characteristics.speed + 3
 
 
 class Creature(pygame.sprite.Sprite):
@@ -78,7 +79,7 @@ class Character(Creature):
     image = load_image('48x48_hero1.png')
     flip_image = pygame.transform.flip(image, True, False)
     arrow_image = load_image('48x48_hero2.png')
-    flip_arrow_image = pygame.transform.flip(image, True, False)
+    flip_arrow_image = pygame.transform.flip(arrow_image, True, False)
     invisibility_image = image.copy()
     invisibility_image.set_alpha(0)
 
@@ -377,10 +378,11 @@ class Ghost(Creature):
             x, y = self.get_dung_coords()
             cx, cy = level.character.get_dung_coords()
             if self.direction in (2, 4) and abs(x - cx) <= 5 and y == cy:
-                GhostBall(self.rect.x, self.rect.y, self.direction, self.fire_speed, self.harm, *group)
+                view.util_sprites.AnimatedGhostBall(self.rect.x, self.rect.y, self.direction,
+                                                    self.fire_speed, self.harm, group)
             if self.direction in (1, 3) and abs(y - cy) <= 5 and x == cx:
-                GhostBall(self.rect.x,
-                          self.rect.y, self.direction, self.fire_speed, self.harm, *group)
+                view.util_sprites.AnimatedGhostBall(self.rect.x, self.rect.y, self.direction,
+                                                    self.fire_speed, self.harm, group)
             self.set_fire_moment()
 
     def can_attack(self):

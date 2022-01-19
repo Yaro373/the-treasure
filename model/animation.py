@@ -3,6 +3,7 @@ import sys
 import pygame
 import random
 import view.level
+import view.util_sprites
 # Изображение не получится загрузить
 # без предварительной инициализации pygame
 pygame.init()
@@ -31,14 +32,8 @@ class Arrow(pygame.sprite.Sprite):
         self.speed = 5
         self.level = view.level.LevelManager.get_current_level()
 
-        if direction == 1:
-            self.image = load_image('arrow1.png')
-        elif direction == 2:
-            self.image = load_image('arrow2.png')
-        elif direction == 3:
-            self.image = load_image('arrow3.png')
-        else:
-            self.image = load_image('arrow4.png')
+        self.group = pygame.sprite.Group()
+        self.image = load_image('arrow1.png')
 
         self.rect = self.image.get_rect()
 
@@ -61,9 +56,30 @@ class Arrow(pygame.sprite.Sprite):
             self.rect.x -= self.speed
 
 
+class AnimatedGhostBall(pygame.sprite.Sprite):
+    frame1 = load_image('32x32_ghostball_frame1.png')
+    frame2 = load_image('32x32_ghostball_frame2.png')
+    frame3 = load_image('32x32_ghostball_frame3.png')
+    frame4 = load_image('32x32_ghostball_frame4.png')
+    frames = [frame1, frame2, frame3, frame4]
+
+    def __init__(self, x, y, surface):
+        super().__init__(surface)
+        self.frames = AnimatedGhostBall.frames
+        self.surface = surface
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
+        self.rect = self.image.get_rect()
+        self.rect = self.rect.move(x, y)
+
+    def update(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
+
+
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, sheet, columns, rows, x, y, surface):
-        super().__init__(surface)
+        super().__init__(surface[0])
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
@@ -93,24 +109,15 @@ class AnimatedSprite(pygame.sprite.Sprite):
     def get_sheet_count(self):
         return len(self.frames)
 
-# нажми 3 а затем лкм, и поймешь как это работает
-# потом нажми 5 и лкм
-# потом нажми 4
-# возможно спрайт большеват, так что позаботься, чтобы он не врезался головой,
-# а она лежала сверху стены
-# но можешь и уменьшить все спрайты, связанные с анимацией. Но учти, что функция resize писалась для
-# квадратных изображений
-
 
 class MainCharacter:
     def __init__(self, x, y):
         self.body_cords = [-0.5, 1, 1, 3, 1, -1, 0, 2, 3, 3]
-        # где должно находиться тело на каждый шаг анимации
+
         self.x = x
         self.y = y
         self.prev_sheet = 0
-        # возможно это кастыль, но пихаем каждый анимирорванныфй спрайт в свою группу,
-        # чтобы контролировать их отрисовку по отдельности
+
         self.legs_group = pygame.sprite.Group()
         self.sword_attack_group = pygame.sprite.Group()
         self.sword_run_group = pygame.sprite.Group()
