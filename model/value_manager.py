@@ -4,10 +4,10 @@ import pygame.time
 
 
 class ValueManager:
-    health = None
-    hearing = None
-    speed = None
-    light = None
+    health = 100
+    hearing = 7
+    speed = 2
+    light = 5
     inventory_size = 5
 
     inventory = [None, 'oil', 'oil', 'oil', None]
