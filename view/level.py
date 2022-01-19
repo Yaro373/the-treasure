@@ -14,9 +14,9 @@ chest_inventory = 'chest_inventory'
 class LevelCreator:
     @staticmethod
     def new_level(num):
-        data = view.level_data.LevelGetter.get_level_by_num(num)
-        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(data.dungeon_size),
-                                       data.wall_sprite, data.floor_sprite)
+        level_data = view.level_data.LevelGetter.get_level_by_num(num)
+        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(level_data.dungeon_size),
+                                       level_data.wall_sprite, level_data.floor_sprite)
         items = model.value_manager.ValueManager.inventory
         x_pos = 1
         y_pos = 1
@@ -24,9 +24,11 @@ class LevelCreator:
                      x_pos * parameters.CELL_SIZE, y_pos * parameters.CELL_SIZE)
 
     @staticmethod
-    def load_level():
+    def load_level(num):
+        level_data = view.level_data.LevelGetter.get_level_by_num(num)
         data = model.data_saver.DataLoader.data
-        dungeon = view.dungeon.Dungeon(data.level_map, chests_inventory=data.chests_data,
+        dungeon = view.dungeon.Dungeon(data.level_map, level_data.wall_sprite, level_data.floor_sprite,
+                                       chests_inventory=data.chests_data,
                                        enemies_positions=data.enemies_positions)
         x_pos, y_pos = data.hero_position
         return Level(dungeon, data.inventory,
@@ -69,7 +71,7 @@ class Level:
 
 class LevelManager:
     level_num = 0
-    level = LevelCreator.new_level(level_num)
+    level = None
 
     @staticmethod
     def get_current_level():
@@ -88,4 +90,6 @@ class LevelManager:
 
     @staticmethod
     def load_level():
-        LevelManager.level = LevelCreator.load_level()
+        LevelManager.level_num = model.data_saver.DataLoader.data.level_num
+        LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
+        LevelManager.level = LevelCreator.load_level(LevelManager.level_num)
