@@ -110,7 +110,7 @@ class DefaultDataSaver:
         data = {
             'health': 100,
             'hearing': 7,
-            'speed': 1,
+            'speed': 2,
             'light': 5,
         }
         with open(DefaultDataSaver.__make_path('player_data.csv'), 'wt', newline='') as csvfile:
@@ -208,6 +208,8 @@ class DataLoader:
     def __load_enemies_positions():
         with open(DataLoader.__make_path('enemies.txt'), 'rt', encoding='utf-8') as file:
             data = [tuple(map(int, line.split())) for line in file.readlines()]
+        if not data[0]:
+            return
         result = [[], [], []]
         for el in data:
             result[el[2] - 1].append((el[0], el[1]))

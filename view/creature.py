@@ -382,10 +382,17 @@ class Ghost(Creature):
         if self.attacking and self.can_fire():
             x, y = self.get_dung_coords()
             cx, cy = level.character.get_dung_coords()
-            if self.direction in (2, 4) and abs(x - cx) <= 5 and y == cy:
+
+            self_coords = {self.get_dung_coords, self.get_d_dung_coords()}
+            character_coords = {level.character.get_dung_coords(), level.character.get_d_dung_coords()}
+            if len(self_coords.intersection(character_coords)) > 0:
                 view.util_sprites.AnimatedGhostBall(self.rect.x, self.rect.y, self.direction,
                                                     self.fire_speed, self.harm, group)
-            if self.direction in (1, 3) and abs(y - cy) <= 5 and x == cx:
+
+            elif self.direction in (2, 4) and abs(x - cx) <= 5 and y == cy:
+                view.util_sprites.AnimatedGhostBall(self.rect.x, self.rect.y, self.direction,
+                                                    self.fire_speed, self.harm, group)
+            elif self.direction in (1, 3) and abs(y - cy) <= 5 and x == cx:
                 view.util_sprites.AnimatedGhostBall(self.rect.x, self.rect.y, self.direction,
                                                     self.fire_speed, self.harm, group)
             self.set_fire_moment()

@@ -83,6 +83,7 @@ class LevelManager:
     def next_level():
         if LevelManager.level_num == 10:
             model.game_ender.end_game(1)
+
         LevelManager.level_num += 1
         LevelManager.level.dungeon.kill()
         LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
