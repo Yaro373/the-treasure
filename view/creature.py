@@ -2,7 +2,7 @@ import pygame
 import random
 from parameters import CELL_SIZE
 from model.util import load_image, seconds_to_milliseconds
-from view.util_sprites import Arrow, GhostBall
+from view.util_sprites import Arrow
 import model.value_manager
 import view.level
 import view.dungeon
@@ -292,7 +292,8 @@ class Ghost(Creature):
         elif direction == 4:
             self.rect.x -= (self.current_speed + cnt_speed)
 
-        # TODO dev
+        # Отклонение от стены при повороте
+
         dev = 0
         if self.attacking:
             self.__clear_cnt_speed(direction, cnt_speed)
@@ -342,11 +343,13 @@ class Ghost(Creature):
             self.__clear_cnt_speed(direction, cnt_speed)
             for k, v in level.dungeon.get_neighbours_coords(self.get_dung_coords(8), 1).items():
                 if direction in (1, 3):
-                    if k in (2, 4) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
+                    if k in (2, 4) and \
+                            level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
                             self.direction = k
                 if direction in (2, 4):
-                    if k in (1, 3) and level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
+                    if k in (1, 3) and \
+                            level.dungeon.get_object_at(*v[0]) == view.dungeon.NOTHING_SIGN:
                         if random.random() <= 0.5:
                             self.direction = k
         else:
@@ -354,7 +357,8 @@ class Ghost(Creature):
         self.f_x += (self.rect.x - prev_pos[0])
         self.f_y += (self.rect.y - prev_pos[1])
         if not self.attacking:
-            neighbours = level.dungeon.get_neighbours_coords(self.get_dung_coords(), self.see_radius)
+            neighbours = level.dungeon\
+                .get_neighbours_coords(self.get_dung_coords(), self.see_radius)
             main_hero_coords = level.character.get_dung_coords()
             for coords in neighbours[direction] + neighbours[0]:
                 if level.dungeon.get_object_at(*coords) == view.dungeon.WALL_SIGN:
@@ -385,7 +389,8 @@ class Ghost(Creature):
                                                     self.fire_speed, self.harm, group)
             self.set_fire_moment()
 
-    def can_attack(self):
+    @staticmethod
+    def can_attack():
         return model.value_manager.ValueManager.is_visibility()
 
     def start_attack(self):
