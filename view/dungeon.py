@@ -20,6 +20,7 @@ FAKE_STATUE_SIGN = 5
 class Dungeon:
     def __init__(self, data, wall_sprite, floor_sprite, chests_inventory=None, enemies_positions=None):
         self.data = data
+        print(self.data)
         self.wall_sprite = wall_sprite
         self.floor_sprite = floor_sprite
         self.chests_inventory = chests_inventory

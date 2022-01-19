@@ -1,4 +1,5 @@
 import pygame
+import model.game_ender
 from model.util import load_image, terminate
 
 WIDTH = 800
@@ -17,6 +18,8 @@ def lose_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                model.game_ender.start_new_game()
 
         pygame.display.flip()
         clock.tick(FPS)

@@ -84,6 +84,75 @@ class DataSaver:
         return os.path.join('data', name)
 
 
+class DefaultDataSaver():
+    @staticmethod
+    def save():
+        DefaultDataSaver.__save_characteristics()
+        DefaultDataSaver.__save_current_level_map()
+        DefaultDataSaver.__save_enemies_positions()
+        DefaultDataSaver.__save_hero_position()
+        DefaultDataSaver.__save_chests_data()
+        DefaultDataSaver.__save_inventory()
+        DefaultDataSaver.__save_level_num()
+        DefaultDataSaver.__save_update_data()
+
+    @staticmethod
+    def __save_characteristics():
+        data = {
+            'health': 100,
+            'hearing': 7,
+            'speed': 1,
+            'light': 5,
+        }
+        with open(DefaultDataSaver.__make_path('player_data.csv'), 'wt', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=data.keys())
+            writer.writeheader()
+            writer.writerow(data)
+
+    @staticmethod
+    def __save_current_level_map():
+        with open(DefaultDataSaver.__make_path('level.txt'), 'wt', encoding='utf-8') as file:
+            print('', file=file)
+
+    @staticmethod
+    def __save_enemies_positions():
+        with open(DefaultDataSaver.__make_path('enemies.txt'), 'wt', encoding='utf-8') as file:
+            print('', file=file)
+
+    @staticmethod
+    def __save_hero_position():
+        with open(DefaultDataSaver.__make_path('hero_pos.txt'), 'wt', encoding='utf-8') as file:
+            print('1 1', file=file)
+
+    @staticmethod
+    def __save_chests_data():
+        with open(DefaultDataSaver.__make_path('chests.csv'), 'wt', newline='') as csvfile:
+            print('', file=csvfile)
+
+    @staticmethod
+    def __save_inventory():
+        items = ['oil', None, None, None, None]
+        save_items = ';'.join(map(str, items))
+        with open(DefaultDataSaver.__make_path('items.txt'), 'wt', encoding='utf-8') as file:
+            print(save_items, file=file)
+
+    @staticmethod
+    def __save_level_num():
+        with open(DefaultDataSaver.__make_path('level_num.txt'), 'wt', encoding='utf-8') as file:
+            print('0', file=file)
+
+    @staticmethod
+    def __save_update_data():
+        with open(DefaultDataSaver.__make_path('update_data.txt'), 'wt', encoding='utf-8') as file:
+            print('empty\n\nempty\n\nempty\n\nempty\n\nNone\n\nNone', file=file)
+
+    @staticmethod
+    def __make_path(name):
+        return os.path.join('data', name)
+
+
+
+
 class DataLoader:
     data = None
 

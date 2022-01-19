@@ -94,6 +94,8 @@ class LevelManager:
     @staticmethod
     def load_level():
         LevelManager.level_num = model.data_saver.DataLoader.data.level_num
-        LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
-        LevelManager.level = LevelCreator.load_level(LevelManager.level_num)
-
+        if LevelManager.level_num == 0:
+            LevelManager.level_num += 1
+            LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
+        else:
+            LevelManager.level = LevelCreator.load_level(LevelManager.level_num)
