@@ -7,16 +7,15 @@ WIDTH = 800
 HEIGHT = 600
 FPS = 50
 
+
 def terminate():
     pygame.quit()
     sys.exit()
 
 
-# screen = pygame.display.set_mode((WIDTH, HEIGHT))
-# clock = pygame.time.Clock()
-
-
-def win_screen(screen, clock):
+def lose_screen():
+    screen = pygame.display.get_surface()
+    clock = pygame.time.Clock()
     fon = pygame.transform.scale(load_image('you_lose.png'), (WIDTH, HEIGHT))
 
     screen.blit(fon, (0, 0))

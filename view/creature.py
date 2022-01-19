@@ -7,6 +7,7 @@ import model.value_manager
 import view.level
 import view.dungeon
 import time
+import model.game_ender
 
 
 class PathIncorrectLoopException(Exception):
@@ -78,6 +79,8 @@ class Character(Creature):
     flip_image = pygame.transform.flip(image, True, False)
     arrow_image = load_image('48x48_hero2.png')
     flip_arrow_image = pygame.transform.flip(image, True, False)
+    invisibility_image = image.copy()
+    invisibility_image.set_alpha(0)
 
     characteristics = BaseCharacteristics(100, 2, 250, 15)
 
@@ -117,6 +120,9 @@ class Character(Creature):
 
     def update(self, event):
         super().update(event)
+
+        if model.value_manager.ValueManager.health == 0:
+            model.game_ender.end_game(0)
 
         if self.direction == 4 and not self.firing:
             self.image = Character.flip_image
@@ -376,7 +382,6 @@ class Ghost(Creature):
                 GhostBall(self.rect.x,
                           self.rect.y, self.direction, self.fire_speed, self.harm, *group)
             self.set_fire_moment()
-
 
     def can_attack(self):
         return model.value_manager.ValueManager.is_visibility()

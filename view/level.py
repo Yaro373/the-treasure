@@ -5,6 +5,8 @@ import view.level_data
 import model.data_saver
 import model.value_manager
 import parameters
+import win
+import model.game_ender
 
 
 main_inventory = 'main_inventory'
@@ -79,6 +81,8 @@ class LevelManager:
 
     @staticmethod
     def next_level():
+        if LevelManager.level_num == 10:
+            model.game_ender.end_game(1)
         LevelManager.level_num += 1
         LevelManager.level.dungeon.kill()
         LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
@@ -93,3 +97,4 @@ class LevelManager:
         LevelManager.level_num = model.data_saver.DataLoader.data.level_num
         LevelManager.level = LevelCreator.new_level(LevelManager.level_num)
         LevelManager.level = LevelCreator.load_level(LevelManager.level_num)
+

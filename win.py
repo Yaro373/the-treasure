@@ -23,6 +23,7 @@ class WinChest(pygame.sprite.Sprite):
         self.opened = True
         self.image = self.image_opened
 
+
 class RandomWinItem(pygame.sprite.Sprite):
 
     def __init__(self, group, width, height):
@@ -51,7 +52,9 @@ def terminate():
 # clock = pygame.time.Clock()
 
 
-def win_screen(screen, clock):
+def win_screen():
+    screen = pygame.display.get_surface()
+    clock = pygame.time.Clock()
     fon = pygame.transform.scale(load_image('you_win.png'), (WIDTH, HEIGHT))
     fon_2 = pygame.transform.scale(load_image('you_win_ogo.png'), (WIDTH, HEIGHT))
 
@@ -77,6 +80,3 @@ def win_screen(screen, clock):
         sg.update()
         pygame.display.flip()
         clock.tick(FPS)
-
-
-# win_screen(screen, clock)
