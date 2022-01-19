@@ -189,6 +189,8 @@ class Chest(BaseObjectSprite):
                          Chest.closed_chest_image_8, x, y, *group)
         self.showing = False
         self.opened = opened
+        if self.opened:
+            self.open_chest()
         # TODO чтение из файла
         self.items = self.generate_items() if items is None else items
 
@@ -226,17 +228,17 @@ class Chest(BaseObjectSprite):
 
     # TODO оптимизировать после добавления полной генерации
     def open_chest(self):
+        self.light_images = [
+            Chest.opened_chest_image_1,
+            Chest.opened_chest_image_2,
+            Chest.opened_chest_image_3,
+            Chest.opened_chest_image_4,
+            Chest.opened_chest_image_5,
+            Chest.opened_chest_image_6,
+            Chest.opened_chest_image_7,
+            Chest.opened_chest_image_8,
+        ]
         if not self.opened:
-            self.light_images = [
-                Chest.opened_chest_image_1,
-                Chest.opened_chest_image_2,
-                Chest.opened_chest_image_3,
-                Chest.opened_chest_image_4,
-                Chest.opened_chest_image_5,
-                Chest.opened_chest_image_6,
-                Chest.opened_chest_image_7,
-                Chest.opened_chest_image_8,
-            ]
             view.level.LevelManager.get_current_level().open_chest_inventory(self)
             self.opened = True
             self.showing = True
