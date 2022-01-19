@@ -27,6 +27,8 @@ class DataSaver:
 
     @staticmethod
     def __save_current_level_map():
+        if view.level.LevelManager.get_current_level() is None:
+            return
         data = view.level.LevelManager.get_current_level().dungeon.data
         with open(DataSaver.__make_path('level.txt'), 'wt', encoding='utf-8') as file:
             for line in data:
@@ -34,6 +36,8 @@ class DataSaver:
 
     @staticmethod
     def __save_enemies_positions():
+        if view.level.LevelManager.get_current_level() is None:
+            return
         ghosts = view.level.LevelManager.get_current_level().dungeon.ghost_sprite_group
         with open(DataSaver.__make_path('enemies.txt'), 'wt', encoding='utf-8') as file:
             for ghost in ghosts:
@@ -41,12 +45,16 @@ class DataSaver:
 
     @staticmethod
     def __save_hero_position():
+        if view.level.LevelManager.get_current_level() is None:
+            return
         coords = view.level.LevelManager.get_current_level().character.get_dung_coords()
         with open(DataSaver.__make_path('hero_pos.txt'), 'wt', encoding='utf-8') as file:
             print(' '.join(map(str, coords)), file=file)
 
     @staticmethod
     def __save_chests_data():
+        if view.level.LevelManager.get_current_level() is None:
+            return
         chest_sprite_group = view.level.LevelManager.get_current_level().dungeon.chest_sprite_group
         with open(DataSaver.__make_path('chests.csv'), 'wt', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=['coord', 'opened', 'inventory'])
