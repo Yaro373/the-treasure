@@ -6,4 +6,4 @@ def end_game(reason):
     if reason == 0:
         view.lose.lose_screen()
     elif reason == 1:
-        view.win.win.win_screen()
+        view.win.win_screen()
