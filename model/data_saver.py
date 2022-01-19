@@ -193,6 +193,17 @@ class DataLoader:
                 }
         except FileNotFoundError:
             DefaultDataSaver.save()
+        data = model.value_manager.ValueManager.get_data_to_save()
+        with open(DataLoader.__make_path('player_data.csv'), 'rt', newline='') as csvfile:
+            reader = csv.DictReader(csvfile, fieldnames=data.keys())
+            next(reader)
+            row = next(reader)
+            return {
+                'health': row['health'],
+                'hearing': row['hearing'],
+                'speed': row['speed'],
+                'light': row['light'],
+            }
 
     @staticmethod
     def __load_current_level_map():
@@ -208,6 +219,8 @@ class DataLoader:
     def __load_enemies_positions():
         with open(DataLoader.__make_path('enemies.txt'), 'rt', encoding='utf-8') as file:
             data = [tuple(map(int, line.split())) for line in file.readlines()]
+        if not data:
+            return
         if not data[0]:
             return
         result = [[], [], []]
@@ -233,7 +246,6 @@ class DataLoader:
                         inventory[i] = None
                 data[(coords[0], coords[1])] = (bool(line['opened']),
                                                 inventory)
-            print(data)
             return data
 
     @staticmethod
