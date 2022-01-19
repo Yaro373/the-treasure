@@ -25,9 +25,7 @@ if __name__ == '__main__':
 
     model.data_saver.DataLoader.load()
 
-    # TODO смена уровней
-    level_manager = view.level.LevelManager()
-    level_manager.next_level()
+    view.level.LevelManager.load_level()
     model.value_manager.ValueManager.initialize()
 
     health_icon = pygame.image.load(os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha()
@@ -46,7 +44,7 @@ if __name__ == '__main__':
 
     while loop:
         events = False
-        level = level_manager.get_current_level()
+        level = view.level.LevelManager.get_current_level()
         for event in pygame.event.get():
             events = True
             if event.type == pygame.QUIT:

@@ -14,6 +14,8 @@ class DataSaver:
         DataSaver.__save_hero_position()
         DataSaver.__save_chests_data()
         DataSaver.__save_inventory()
+        DataSaver.__save_level_num()
+        DataSaver.__save_update_data()
 
     @staticmethod
     def __save_characteristics():
@@ -64,6 +66,20 @@ class DataSaver:
             print(save_items, file=file)
 
     @staticmethod
+    def __save_level_num():
+        with open(DataSaver.__make_path('level_num.txt'), 'wt', encoding='utf-8') as file:
+            print(view.level.LevelManager.level_num, file=file)
+
+    @staticmethod
+    def __save_update_data():
+        with open(DataSaver.__make_path('update_data.txt'), 'wt', encoding='utf-8') as file:
+            data = model.value_manager.ValueManager.get_string_to_save()
+            for element in data:
+                for el in element:
+                    print(el, file=file)
+                print(file=file)
+
+    @staticmethod
     def __make_path(name):
         return os.path.join('data', name)
 
@@ -79,9 +95,10 @@ class DataLoader:
         hero_position = DataLoader.__load_hero_position()
         chests_data = DataLoader.__load_chests_data()
         inventory = DataLoader.__load_inventory()
-        DataLoader.data = Data(characteristics, level_map, enemies_positions, hero_position,
-                               chests_data, inventory)
-        print(characteristics)
+        level_num = DataLoader.__load_level_num()
+        update_data = DataLoader.__load_update_data()
+        DataLoader.data = Data(characteristics, level_map, level_num, enemies_positions, hero_position,
+                               chests_data, inventory, update_data)
 
     @staticmethod
     def __load_characteristics():
@@ -144,16 +161,63 @@ class DataLoader:
             return result
 
     @staticmethod
+    def __load_level_num():
+        with open(DataLoader.__make_path('level_num.txt'), 'rt', encoding='utf-8') as file:
+            result = int(file.readline().rstrip())
+            return result
+
+    @staticmethod
+    def __load_update_data():
+        with open(DataLoader.__make_path('update_data.txt'), 'rt', encoding='utf-8') as file:
+            lines = file.readlines()
+            results = [[]]
+            for line in lines:
+                line = line.rstrip()
+                if line == '':
+                    results.append([])
+                else:
+                    results[-1].append(line)
+
+            for i in range(len(results)):
+                for j in range(len(results[i])):
+                    if results[i][j] == 'empty':
+                        results[i] = []
+                        break
+                    if results[i][j] == 'None':
+                        results[i] = None
+                        break
+                    results[i][j] = results[i][j].split(',')
+                    results[i][j] = list(map(int, results[i][j]))
+                    results[i][j] = tuple(results[i][j])
+
+            return UpdateCharacteristicsData(results[0], results[1], results[2],
+                                             results[3], results[4], results[5])
+
+    @staticmethod
     def __make_path(name):
         return os.path.join('data', name)
 
 
 class Data:
-    def __init__(self, characteristics, level_map, enemies_positions, hero_position,
-                 chests_data, inventory):
+    def __init__(self, characteristics, level_map, level_num, enemies_positions, hero_position,
+                 chests_data, inventory, update_data):
         self.characteristics = characteristics
         self.level_map = level_map
+        self.level_num = level_num
         self.enemies_positions = enemies_positions
         self.hero_position = hero_position
         self.chests_data = chests_data
         self.inventory = inventory
+        self.update_data = update_data
+
+
+class UpdateCharacteristicsData:
+    def __init__(self, update_health_data, update_hearing_data,
+                 update_speed_data, update_light_data, update_inventory_data,
+                 visibility_data):
+        self.update_health_data = update_health_data
+        self.update_hearing_data = update_hearing_data
+        self.update_speed_data = update_speed_data
+        self.update_light_data = update_light_data
+        self.update_inventory_data = update_inventory_data
+        self.visibility_data = visibility_data
