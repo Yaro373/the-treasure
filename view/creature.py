@@ -74,15 +74,15 @@ class Creature(pygame.sprite.Sprite):
 
 
 class Character(Creature):
-    image = load_image('32x32_character.png')
-    invisibility_image = image.copy()
-    invisibility_image.set_alpha(50)
+    image = load_image('48x48_hero1.png')
+    flip_image = pygame.transform.flip(image, True, False)
+    arrow_image = load_image('48x48_hero2.png')
+    flip_arrow_image = pygame.transform.flip(image, True, False)
 
     characteristics = BaseCharacteristics(100, 2, 250, 15)
 
     def __init__(self, x, y, items, *group):
         super().__init__(Character.image, x, y, Character.characteristics, *group)
-        self.speed = 4
         self.hearing_area_size = 5
         self.lighting_area = 1
         self.hearing_area = set()
@@ -94,12 +94,17 @@ class Character(Creature):
         self.prev_light_sprites = []
         self.items = items
         self.logging = False
-        # TODO загрузка из файла
         self.remain = seconds_to_milliseconds(60)
         self.start = pygame.time.get_ticks()
+        self.firing = False
 
     def fire(self, *group):
         if self.can_fire():
+            self.firing = True
+            if self.direction == 2:
+                self.image = Character.arrow_image
+            else:
+                self.image = Character.flip_arrow_image
             self.set_fire_moment()
             x, y = self.rect.x, self.rect.y
             Arrow(x + self.rect.w // 2, y + self.rect.h // 2, self.direction, *group)
@@ -112,6 +117,11 @@ class Character(Creature):
 
     def update(self, event):
         super().update(event)
+
+        if self.direction == 4 and not self.firing:
+            self.image = Character.flip_image
+        elif not self.firing:
+            self.image = Character.image
 
         if len(self.items) < (size := model.value_manager.ValueManager.inventory_size):
             self.items += [None] * (size - len(self.items))
@@ -149,6 +159,7 @@ class Character(Creature):
             self.rect.y -= self.speed
             self.f_y -= self.speed
             self.direction = 1
+            self.firing = False
         if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.y += self.speed
             self.f_y += self.speed
@@ -157,6 +168,7 @@ class Character(Creature):
             self.rect.x += self.speed
             self.f_x += self.speed
             self.direction = 2
+            self.firing = False
         if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x -= self.speed
             self.f_x -= self.speed
@@ -165,6 +177,7 @@ class Character(Creature):
             self.rect.y += self.speed
             self.f_y += self.speed
             self.direction = 3
+            self.firing = False
         if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.y -= self.speed
             self.f_y -= self.speed
@@ -173,6 +186,7 @@ class Character(Creature):
             self.rect.x -= self.speed
             self.f_x -= self.speed
             self.direction = 4
+            self.firing = False
         if pygame.sprite.spritecollideany(self, level.dungeon.walls_sprite_group):
             self.rect.x += self.speed
             self.f_x += self.speed
@@ -238,18 +252,15 @@ class Character(Creature):
 
 
 class Ghost(Creature):
-    image = load_image('32x32_ghost.png')
-    not_visible_image = image.copy()
-    not_visible_image.set_alpha(0)
-
     def __init__(self, x, y, level, *group):
         data = GhostDataManager.get_data_by_level(level)
 
-        super().__init__(Ghost.image, x, y, data.characteristics.base_characteristics, *group)
+        super().__init__(data.image, x, y, data.characteristics.base_characteristics, *group)
         self.see_radius = data.characteristics.see_radius
         self.attack_time = data.characteristics.attack_time
         self.fire_speed = data.characteristics.fire_speed
         self.image = data.image
+        self.not_visible_image = self.image.copy()
 
         self.attacking = False
         self.start_attack_moment = -1
@@ -348,10 +359,10 @@ class Ghost(Creature):
             self.kill()
 
     def set_not_visible(self):
-        self.image = Ghost.not_visible_image
+        self.image = self.not_visible_image
 
     def set_visible(self):
-        self.image = Ghost.image
+        self.image = self.image
 
     def fire(self, *group):
         level = view.level.LevelManager.get_current_level()
@@ -420,9 +431,9 @@ class GhostCharacteristicsManager:
 
 class GhostImageManager:
     __data = {
-        1: load_image('32x32_ghost.png'),
-        2: load_image('32x32_ghost.png'),
-        3: load_image('32x32_ghost.png'),
+        1: load_image('48x48_ghost1.png'),
+        2: load_image('48x48_ghost2.png'),
+        3: load_image('48x48_ghost3.png'),
     }
 
     @staticmethod
