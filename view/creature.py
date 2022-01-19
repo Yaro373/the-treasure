@@ -254,13 +254,14 @@ class Character(Creature):
 class Ghost(Creature):
     def __init__(self, x, y, level, *group):
         data = GhostDataManager.get_data_by_level(level)
-
+        self.data = data
         super().__init__(data.image, x, y, data.characteristics.base_characteristics, *group)
         self.see_radius = data.characteristics.see_radius
         self.attack_time = data.characteristics.attack_time
         self.fire_speed = data.characteristics.fire_speed
         self.image = data.image
         self.not_visible_image = self.image.copy()
+        self.not_visible_image.set_alpha(0)
 
         self.attacking = False
         self.start_attack_moment = -1
@@ -362,7 +363,7 @@ class Ghost(Creature):
         self.image = self.not_visible_image
 
     def set_visible(self):
-        self.image = self.image
+        self.image = self.data.image
 
     def fire(self, *group):
         level = view.level.LevelManager.get_current_level()
