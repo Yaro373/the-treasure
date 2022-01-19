@@ -1,6 +1,6 @@
 import sys
 import pygame
-from model.util import load_image
+from model.util import load_image, terminate
 import random
 
 WIDTH = 800
@@ -40,16 +40,6 @@ class RandomWinItem(pygame.sprite.Sprite):
         self.opened = False
         self.rect.x = width
         self.rect.y = height
-
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
-
-
-# screen = pygame.display.set_mode((WIDTH, HEIGHT))
-# clock = pygame.time.Clock()
 
 
 def win_screen():

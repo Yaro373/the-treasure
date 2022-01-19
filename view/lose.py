@@ -1,16 +1,9 @@
-import sys
 import pygame
-from model.util import load_image
-import random
+from model.util import load_image, terminate
 
 WIDTH = 800
 HEIGHT = 600
 FPS = 50
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
 
 
 def lose_screen():
@@ -27,6 +20,3 @@ def lose_screen():
 
         pygame.display.flip()
         clock.tick(FPS)
-
-
-# win_screen(screen, clock)

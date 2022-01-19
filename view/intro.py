@@ -1,9 +1,9 @@
 import pygame
 import model.data_saver
+import model.util
 
 
 def show_intro(text_string):
-    result = 1
     alpha = 0
     add = 1
     clock = pygame.time.Clock()
@@ -12,9 +12,7 @@ def show_intro(text_string):
     while loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                model.data_saver.DataSaver.save()
-                result = 0
-                loop = False
+                model.util.terminate()
 
         w, h = screen.get_size()
 
@@ -37,4 +35,3 @@ def show_intro(text_string):
 
         pygame.display.flip()
         clock.tick(60)
-    return result

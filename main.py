@@ -7,6 +7,7 @@ import model.tip
 import view.intro
 from parameters import GAME_TITLE
 from main_menu import start_screen
+from model.util import terminate
 
 
 # управление wasd - перемещение V
@@ -59,10 +60,7 @@ if __name__ == '__main__':
                 level.dungeon.character_sprite_group.update(event)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
                 view.level.LevelManager.next_level()
-                result = view.intro.show_intro(f'Уровень {view.level.LevelManager.level_num + 1}')
-                if result == 0:
-                    model.data_saver.DataSaver.save()
-                    loop = False
+                view.intro.show_intro(f'Уровень {view.level.LevelManager.level_num + 1}')
             level.update_inventories(event)
             level.dungeon.update(event)
         if not events:
