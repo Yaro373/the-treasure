@@ -9,12 +9,11 @@ size = 48
 RANDOM_ITEMS_LIST = {
     'tea': 0.25,
     'hot_tea': 0.15,
-    'dream_catcher': 0.03,
-    'bag': 0.15,
-    'old_clock': 0.02,
+    'dream_catcher': 0.05,
+    'bag': 0.10,
+    'old_clock': 0.05,
     'hearing_potion': 0.15,
-    'speed_potion': 0.10,
-    'snow_ball': 0.05,
+    'speed_potion': 0.15,
     'invisibility_potion': 0.10,
 }
 
@@ -27,7 +26,6 @@ images = {
     'old_clock': load_image('48x48_old_clock.png'),
     'hearing_potion': load_image('48x48_hearing_potion.png'),
     'speed_potion': load_image('48x48_speed_potion.png'),
-    'snow_ball': load_image('48x48_snow_ball.png'),
     'invisibility_potion': load_image('48x48_invisibility_potion.png'),
 }
 
@@ -37,7 +35,6 @@ class Item:
         'tea': resources.strings.tea,
         'hot_tea': resources.strings.hot_tea,
         'old_clock': resources.strings.old_clock,
-        'snow_ball': resources.strings.snow_ball,
         'hearing_potion': resources.strings.hearing_potion,
         'speed_potion': resources.strings.speed_potion,
         'oil': resources.strings.oil,
@@ -114,4 +111,12 @@ class Item:
     @staticmethod
     def old_clock():
         view.level.LevelManager.reload_level()
+
+    @staticmethod
+    def snow_ball():
+        level = view.level.LevelManager.get_current_level()
+        ngh = level.dungeon.get_radius_neighbours_coords(7)
+        for ghost in level.dungeon.ghost_sprite_group:
+            if ghost.get_dung_coords() in ngh or ghost.get_d_dung_coords() in ngh:
+                ghost.kill()
 

@@ -365,6 +365,7 @@ class Ghost(Creature):
                           self.rect.y, self.direction, self.fire_speed, self.harm, *group)
             self.set_fire_moment()
 
+
     def can_attack(self):
         return model.value_manager.ValueManager.is_visibility()
 
