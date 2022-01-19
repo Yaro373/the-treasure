@@ -20,11 +20,9 @@ FAKE_STATUE_SIGN = 5
 class Dungeon:
     def __init__(self, data, wall_sprite, floor_sprite, chests_inventory=None, enemies_positions=None):
         self.data = data
-        print(self.data)
         self.wall_sprite = wall_sprite
         self.floor_sprite = floor_sprite
         self.chests_inventory = chests_inventory
-        print(self.chests_inventory)
         self.enemies_positions = enemies_positions
         self.walls_sprite_group = pygame.sprite.Group()
         self.floor_sprite_group = pygame.sprite.Group()
@@ -70,8 +68,10 @@ class Dungeon:
 
                     self.sprites_matrix[row][col] = (floor1, )
         if self.enemies_positions is not None:
-            for pos in self.enemies_positions:
-                view.creature.Ghost(pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, 1, self.ghost_sprite_group, self.all_sprites)
+            for level in range(len(self.enemies_positions)):
+                for pos in self.enemies_positions[level]:
+                    view.creature.Ghost(pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, level + 1,
+                                        self.ghost_sprite_group, self.all_sprites)
 
     def update(self, event):
         level = view.level.LevelManager.get_current_level()
@@ -162,7 +162,7 @@ class Dungeon:
 
 class DungeonGenerator:
     @staticmethod
-    def generate(size):
+    def generate(size, ghosts_count):
         n = size
         stek = [(1, 1)]  # список посещенных клеток
         result = [[WALL_SIGN for i in range(n * 2 + 1)] for i in
@@ -179,6 +179,7 @@ class DungeonGenerator:
             else:
                 result[i][0] = UNBREAKABLE_WALL_SIGN
                 result[i][-1] = UNBREAKABLE_WALL_SIGN
+
         # добавляем комнаты
         visited, unvisited_cells_num, result = DungeonGenerator.add_chests(result, size, visited,
                                                                            unvisited_cells_num)
@@ -229,7 +230,22 @@ class DungeonGenerator:
                 visited.append(current_cell)
                 unvisited_cells_num -= 1
 
-        return result
+        nothing_signs = []
+        for i in range(len(result)):
+            for j in range(len(result[i])):
+                if result[i][j] == NOTHING_SIGN:
+                    nothing_signs.append((i, j))
+        ghost_cords = [[], [], []]
+        for i in range(ghosts_count[0]):
+            cord = random.choice(nothing_signs)
+            ghost_cords[0].append(cord)
+        for i in range(ghosts_count[1]):
+            cord = random.choice(nothing_signs)
+            ghost_cords[1].append(cord)
+        for i in range(ghosts_count[2]):
+            cord = random.choice(nothing_signs)
+            ghost_cords[2].append(cord)
+        return result, ghost_cords
 
     @staticmethod
     def add_chests(result, size, visited, unvisited_cells_num):
@@ -243,7 +259,6 @@ class DungeonGenerator:
         choice_data = []
         for x in range(size - 2):
             choice_data.append([(x, y) for y in range(size - 2)])
-        print("choice_data:", choice_data)
         # удаляем ненужное
         for x, y in res_visited:
             choice_data[x][y] = None
@@ -253,7 +268,6 @@ class DungeonGenerator:
             for el in i:
                 if el != None:
                     res_choice_data.append(el)
-        print("res_choice_data:", res_choice_data)
 
         # создаем комнату
         x, y = random.choice(res_choice_data)

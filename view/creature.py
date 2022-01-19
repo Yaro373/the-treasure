@@ -263,6 +263,7 @@ class Ghost(Creature):
         data = GhostDataManager.get_data_by_level(level)
         self.data = data
         super().__init__(data.image, x, y, data.characteristics.base_characteristics, *group)
+        self.level = level
         self.see_radius = data.characteristics.see_radius
         self.attack_time = data.characteristics.attack_time
         self.fire_speed = data.characteristics.fire_speed
@@ -392,6 +393,9 @@ class Ghost(Creature):
     @staticmethod
     def can_attack():
         return model.value_manager.ValueManager.is_visibility()
+
+    def get_level(self):
+        return self.level
 
     def start_attack(self):
         self.attacking = True

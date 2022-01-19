@@ -16,8 +16,9 @@ class LevelCreator:
     @staticmethod
     def new_level(num):
         level_data = view.level_data.LevelGetter.get_level_by_num(num)
-        dungeon = view.dungeon.Dungeon(view.dungeon.DungeonGenerator.generate(level_data.dungeon_size),
-                                       level_data.wall_sprite, level_data.floor_sprite)
+        data = view.dungeon.DungeonGenerator.generate(level_data.dungeon_size, level_data.ghosts_count)
+        dungeon = view.dungeon.Dungeon(data[0], level_data.wall_sprite, level_data.floor_sprite,
+                                       enemies_positions=data[1])
         items = model.value_manager.ValueManager.inventory
         x_pos = 1
         y_pos = 1

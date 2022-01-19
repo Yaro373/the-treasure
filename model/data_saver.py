@@ -41,7 +41,8 @@ class DataSaver:
         ghosts = view.level.LevelManager.get_current_level().dungeon.ghost_sprite_group
         with open(DataSaver.__make_path('enemies.txt'), 'wt', encoding='utf-8') as file:
             for ghost in ghosts:
-                print(' '.join(map(str, ghost.get_dung_coords())), file=file)
+                print(' '.join(map(str, ghost.get_dung_coords())), file=file, end=' ')
+                print(ghost.get_level(), file=file)
 
     @staticmethod
     def __save_hero_position():
@@ -92,7 +93,7 @@ class DataSaver:
         return os.path.join('data', name)
 
 
-class DefaultDataSaver():
+class DefaultDataSaver:
     @staticmethod
     def save():
         DefaultDataSaver.__save_characteristics()
@@ -159,8 +160,6 @@ class DefaultDataSaver():
         return os.path.join('data', name)
 
 
-
-
 class DataLoader:
     data = None
 
@@ -208,7 +207,11 @@ class DataLoader:
     @staticmethod
     def __load_enemies_positions():
         with open(DataLoader.__make_path('enemies.txt'), 'rt', encoding='utf-8') as file:
-            return [tuple(map(int, line.split())) for line in file.readlines()]
+            data = [tuple(map(int, line.split())) for line in file.readlines()]
+        result = [[], [], []]
+        for el in data:
+            result[el[2] - 1].append((el[0], el[1]))
+        return result
 
     @staticmethod
     def __load_hero_position():
