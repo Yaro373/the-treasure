@@ -1,4 +1,3 @@
-import pygame
 import lose
 import win
 
