@@ -166,6 +166,7 @@ class DataLoader:
 
     @staticmethod
     def load():
+
         characteristics = DataLoader.__load_characteristics()
         level_map = DataLoader.__load_current_level_map()
         enemies_positions = DataLoader.__load_enemies_positions()
@@ -179,17 +180,20 @@ class DataLoader:
 
     @staticmethod
     def __load_characteristics():
-        data = model.value_manager.ValueManager.get_data_to_save()
-        with open(DataLoader.__make_path('player_data.csv'), 'rt', newline='') as csvfile:
-            reader = csv.DictReader(csvfile, fieldnames=data.keys())
-            next(reader)
-            row = next(reader)
-            return {
-                'health': row['health'],
-                'hearing': row['hearing'],
-                'speed': row['speed'],
-                'light': row['light'],
-            }
+        try:
+            data = model.value_manager.ValueManager.get_data_to_save()
+            with open(DataLoader.__make_path('player_data.csv'), 'rt', newline='') as csvfile:
+                reader = csv.DictReader(csvfile, fieldnames=data.keys())
+                next(reader)
+                row = next(reader)
+                return {
+                    'health': row['health'],
+                    'hearing': row['hearing'],
+                    'speed': row['speed'],
+                    'light': row['light'],
+                }
+        except FileNotFoundError:
+            DefaultDataSaver.save()
 
     @staticmethod
     def __load_current_level_map():

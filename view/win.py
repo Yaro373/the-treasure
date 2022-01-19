@@ -62,7 +62,7 @@ def win_screen():
                 if not chest.opened:
                     chest.open()
                     RandomWinItem(sg, 0, 100)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SLASH:
                 model.game_ender.start_new_game()
 
         screen.fill((0, 0, 0))

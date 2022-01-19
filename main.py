@@ -59,10 +59,6 @@ def start_screen():
 def play():
     size = WIDTH, HEIGHT
     screen = pygame.display.get_surface()
-    model.data_saver.DataLoader.load()
-
-    view.level.LevelManager.load_level()
-    model.value_manager.ValueManager.initialize()
 
     health_icon = pygame.image.load(
         os.path.join('resources', 'sprites', '32x32_health.png')).convert_alpha()
@@ -151,5 +147,10 @@ if __name__ == '__main__':
     size = WIDTH, HEIGHT
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption(GAME_TITLE)
+
+    model.data_saver.DataLoader.load()
+
+    view.level.LevelManager.load_level()
+    model.value_manager.ValueManager.initialize()
 
     start_screen()

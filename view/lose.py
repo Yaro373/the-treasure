@@ -18,7 +18,7 @@ def lose_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SLASH:
                 model.game_ender.start_new_game()
 
         pygame.display.flip()
